@@ -1,10 +1,9 @@
 import { idb, redb } from "@/common/db";
-import * as Pusher from "pusher";
 import { fromBuffer, now } from "@/common/utils";
 import { Orders } from "@/utils/orders";
 import _ from "lodash";
 import { config } from "@/config/index";
-import { redis } from "@/common/redis";
+import { redis, redisWebsocketPublisher } from "@/common/redis";
 import { logger } from "@/common/logger";
 import { Sources } from "@/models/sources";
 import { getJoiPriceObject } from "@/common/joi";
@@ -103,33 +102,17 @@ export class NewTopBidWebsocketEvent {
       });
     }
 
-    const server = new Pusher.default({
-      appId: config.websocketServerAppId,
-      key: config.websocketServerAppKey,
-      secret: config.websocketServerAppSecret,
-      host: config.websocketServerHost,
-      useTLS: true,
-    });
-
-    if (payloads.length > 1) {
-      const payloadsBatches = _.chunk(payloads, Number(config.websocketServerEventMaxBatchSize));
-
-      await Promise.all(
-        payloadsBatches.map((payloadsBatch) =>
-          server.triggerBatch(
-            payloadsBatch.map((payload) => {
-              return {
-                channel: "top-bids",
-                name: "new-top-bid",
-                data: JSON.stringify(payload),
-              };
-            })
-          )
+    await Promise.all(
+      payloads.map((payload) =>
+        redisWebsocketPublisher.publish(
+          "new-top-bid",
+          JSON.stringify({
+            channel: "new_top_bid",
+            data: payload,
+          })
         )
-      );
-    } else {
-      await server.trigger("top-bids", "new-top-bid", JSON.stringify(payloads[0]));
-    }
+      )
+    );
   }
 
   static async getOwners(tokenSetId: string): Promise<string[]> {

@@ -19,7 +19,7 @@ export const redisSubscriber = new Redis(config.redisUrl, {
   enableReadyCheck: false,
 });
 
-export const redisPublisher = new Redis(config.redisWebsocketUrl, {
+export const redisWebsocketPublisher = new Redis(config.redisWebsocketUrl, {
   maxRetriesPerRequest: null,
   enableReadyCheck: false,
 });
