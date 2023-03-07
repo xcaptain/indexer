@@ -1,8 +1,9 @@
 import { redb } from "@/common/db";
+import * as Pusher from "pusher";
 import { formatEth, fromBuffer } from "@/common/utils";
 import { Orders } from "@/utils/orders";
+import { config } from "@/config/index";
 import { Sources } from "@/models/sources";
-import { redisWebsocketPublisher } from "@/common/redis";
 
 export class NewActivityWebsocketEvent {
   public static async triggerEvent(data: NewActivityWebsocketEventInfo) {
@@ -39,6 +40,14 @@ export class NewActivityWebsocketEvent {
             `,
       { activityId: data.activityId }
     );
+
+    const server = new Pusher.default({
+      appId: config.websocketServerAppId,
+      key: config.websocketServerAppKey,
+      secret: config.websocketServerAppSecret,
+      host: config.websocketServerHost,
+      useTLS: true,
+    });
 
     const sources = await Sources.getInstance();
 
@@ -94,7 +103,7 @@ export class NewActivityWebsocketEvent {
       },
     };
 
-    await redisWebsocketPublisher.publish("new_activity", JSON.stringify(payload));
+    await server.trigger("activities", "new-activity", JSON.stringify(payload));
   }
 }
 
