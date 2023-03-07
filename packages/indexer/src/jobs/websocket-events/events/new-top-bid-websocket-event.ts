@@ -103,19 +103,24 @@ export class NewTopBidWebsocketEvent {
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.log("new-top-bid-websocket-event", `Triggering event. orderId=${data.orderId}`);
-    await Promise.all(
-      payloads.map((payload) =>
-        redisWebsocketPublisher.publish(
-          "new-top-bid",
-          JSON.stringify({
-            channel: "new_top_bid",
-            data: payload,
-          })
+    try {
+      // eslint-disable-next-line no-console
+      console.log("new-top-bid-websocket-event", `Triggering event. orderId=${data.orderId}`);
+      await Promise.all(
+        payloads.map((payload) =>
+          redisWebsocketPublisher.publish(
+            "new-top-bid",
+            JSON.stringify({
+              channel: "new_top_bid",
+              data: payload,
+            })
+          )
         )
-      )
-    );
+      );
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
 
     const server = new Pusher.default({
       appId: config.websocketServerAppId,
