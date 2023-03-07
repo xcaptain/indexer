@@ -1,4 +1,5 @@
 import { idb, redb } from "@/common/db";
+import * as Pusher from "pusher";
 import { fromBuffer, now } from "@/common/utils";
 import { Orders } from "@/utils/orders";
 import _ from "lodash";
@@ -102,6 +103,8 @@ export class NewTopBidWebsocketEvent {
       });
     }
 
+    // eslint-disable-next-line no-console
+    console.log("new-top-bid-websocket-event", `Triggering event. orderId=${data.orderId}`);
     await Promise.all(
       payloads.map((payload) =>
         redisWebsocketPublisher.publish(
@@ -113,6 +116,34 @@ export class NewTopBidWebsocketEvent {
         )
       )
     );
+
+    const server = new Pusher.default({
+      appId: config.websocketServerAppId,
+      key: config.websocketServerAppKey,
+      secret: config.websocketServerAppSecret,
+      host: config.websocketServerHost,
+      useTLS: true,
+    });
+
+    if (payloads.length > 1) {
+      const payloadsBatches = _.chunk(payloads, Number(config.websocketServerEventMaxBatchSize));
+
+      await Promise.all(
+        payloadsBatches.map((payloadsBatch) =>
+          server.triggerBatch(
+            payloadsBatch.map((payload) => {
+              return {
+                channel: "top-bids",
+                name: "new-top-bid",
+                data: JSON.stringify(payload),
+              };
+            })
+          )
+        )
+      );
+    } else {
+      await server.trigger("top-bids", "new-top-bid", JSON.stringify(payloads[0]));
+    }
   }
 
   static async getOwners(tokenSetId: string): Promise<string[]> {
