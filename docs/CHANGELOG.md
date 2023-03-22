@@ -1,3 +1,10 @@
+# [6.0.0-dev.10](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.9...v6.0.0-dev.10) (2023-03-22)
+
+
+### Features
+
+* added collections supported marketplaces api ([c0fb494](https://github.com/reservoirprotocol/indexer/commit/c0fb49492cda36a30c0103b0fe4ecd142189ba54))
+
 # [6.0.0-dev.9](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.8...v6.0.0-dev.9) (2023-03-22)
 
 
