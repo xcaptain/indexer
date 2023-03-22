@@ -2,6 +2,8 @@ import { AddressZero } from "@ethersproject/constants";
 import _ from "lodash";
 
 import { idb } from "@/common/db";
+import { Tokens } from "@/models/tokens";
+import { tryGetCollectionOpenseaFees } from "@/utils/opensea";
 
 export type MarketPlaceFee = {
   recipient: string;
@@ -50,4 +52,36 @@ export const updateMarketplaceFeeSpec = async (
       );
     }
   }
+};
+
+export const getCollectionOpenseaFees = async (
+  collection: string,
+  contract: string,
+  totalBps?: number
+) => {
+  const openseaMarketplaceFees: MarketPlaceFee[] = [];
+
+  const tokenId = await Tokens.getSingleToken(collection);
+  const tryGetCollectionOpenseaFeesResult = await tryGetCollectionOpenseaFees(contract, tokenId);
+
+  if (tryGetCollectionOpenseaFeesResult.isSuccess) {
+    const openseaFees = tryGetCollectionOpenseaFeesResult.openseaFees;
+
+    for (const [feeRecipient, feeBps] of Object.entries(openseaFees)) {
+      openseaMarketplaceFees.push({ recipient: feeRecipient, bps: feeBps });
+    }
+
+    await updateMarketplaceFeeSpec(
+      collection,
+      "opensea",
+      openseaMarketplaceFees as MarketPlaceFee[]
+    );
+  } else if (totalBps != null && totalBps < 50) {
+    openseaMarketplaceFees.push({
+      recipient: "0x0000a26b00c1f0df003000390027140000faa719",
+      bps: 50 - totalBps,
+    });
+  }
+
+  return openseaMarketplaceFees;
 };
