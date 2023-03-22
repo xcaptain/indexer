@@ -1,3 +1,10 @@
+# [6.0.0-dev.6](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.5...v6.0.0-dev.6) (2023-03-22)
+
+
+### Bug Fixes
+
+* trigger version bump ([07fd9a8](https://github.com/reservoirprotocol/indexer/commit/07fd9a8e765a88a7dc84ad90d393ae755f8b9dff))
+
 # [5.277.0-dev.5](https://github.com/reservoirprotocol/indexer/compare/v5.277.0-dev.4...v5.277.0-dev.5) (2023-03-22)
 
 
