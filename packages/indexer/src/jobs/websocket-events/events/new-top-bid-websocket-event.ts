@@ -105,13 +105,16 @@ export class NewTopBidWebsocketEvent {
 
     try {
       // eslint-disable-next-line no-console
-      console.log("new-top-bid-websocket-event", `Triggering event. orderId=${data.orderId}`);
+      logger.info(
+        "new-top-bid-websocket-event",
+        `Triggering event. orderId=${data.orderId}, tokenSetId=${order.token_set_id}`
+      );
       await Promise.all(
         payloads.map((payload) =>
           redisWebsocketPublisher.publish(
             "new-top-bid",
             JSON.stringify({
-              channel: "new_top_bid",
+              channel: "new-top-bid",
               data: payload,
             })
           )
