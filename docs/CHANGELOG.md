@@ -1,3 +1,10 @@
+# [6.0.0-dev.9](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.8...v6.0.0-dev.9) (2023-03-22)
+
+
+### Bug Fixes
+
+* filter out redundant steps ([821ad29](https://github.com/reservoirprotocol/indexer/commit/821ad29a20d87db7c0f695f5b05754cd120180ce))
+
 # [6.0.0-dev.8](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.7...v6.0.0-dev.8) (2023-03-22)
 
 
