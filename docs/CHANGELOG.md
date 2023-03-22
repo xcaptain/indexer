@@ -1,3 +1,10 @@
+# [6.0.0-dev.7](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.6...v6.0.0-dev.7) (2023-03-22)
+
+
+### Bug Fixes
+
+* configure pipeline ([e4ee820](https://github.com/reservoirprotocol/indexer/commit/e4ee8205896e513a7eadea85c21ec213a831711d))
+
 # [6.0.0-dev.6](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.5...v6.0.0-dev.6) (2023-03-22)
 
 
