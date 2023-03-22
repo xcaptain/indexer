@@ -7,11 +7,8 @@ import { redb } from "@/common/db";
 import { baseProvider } from "@/common/provider";
 import { bn, fromBuffer, now } from "@/common/utils";
 import { config } from "@/config/index";
-import { Tokens } from "@/models/tokens";
 import * as marketplaceFees from "@/utils/marketplace-fees";
 import { logger } from "@/common/logger";
-import { redis } from "@/common/redis";
-import * as collectionUpdatesMetadata from "@/jobs/collection-updates/metadata-queue";
 
 export interface BaseOrderBuildOptions {
   maker: string;
@@ -174,34 +171,7 @@ export const getBuildInfo = async (
     }
 
     // Refresh opensea fees
-    if (
-      (await redis.set(
-        `refresh-collection-opensea-fees:${collection}`,
-        now(),
-        "EX",
-        3600,
-        "NX"
-      )) === "OK"
-    ) {
-      logger.info(
-        "getCollectionOpenseaFees",
-        `refresh fees. collection=${collection}, openseaMarketplaceFees=${JSON.stringify(
-          openseaMarketplaceFees
-        )}`
-      );
-
-      try {
-        const tokenId = await Tokens.getSingleToken(collection);
-
-        await collectionUpdatesMetadata.addToQueue(
-          fromBuffer(collectionResult.contract),
-          tokenId,
-          collectionResult.community
-        );
-      } catch {
-        // Skip errors
-      }
-    }
+    await marketplaceFees.refreshCollectionOpenseaFeesAsync(collection);
   }
 
   if (options.fee && options.feeRecipient) {
