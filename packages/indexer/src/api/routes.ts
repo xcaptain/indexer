@@ -491,6 +491,12 @@ export const setupRoutes = (server: Server) => {
     options: collectionsEndpoints.putSetCollectionCommunityV1Options,
   });
 
+  server.route({
+    method: "GET",
+    path: "/collections/{collection}/supported-marketplaces/v1",
+    options: collectionsEndpoints.getCollectionSupportedMarketplacesV1Options,
+  });
+
   // Collections Sets
 
   server.route({

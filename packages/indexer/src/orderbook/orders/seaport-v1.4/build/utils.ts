@@ -7,11 +7,11 @@ import { redb } from "@/common/db";
 import { baseProvider } from "@/common/provider";
 import { bn, fromBuffer, now } from "@/common/utils";
 import { config } from "@/config/index";
-import { getCollectionOpenseaFees } from "@/orderbook/orders/seaport/build/utils";
 import { logger } from "@/common/logger";
 import { redis } from "@/common/redis";
 import { Tokens } from "@/models/tokens";
 import * as collectionUpdatesMetadata from "@/jobs/collection-updates/metadata-queue";
+import * as marketplaceFees from "@/utils/marketplace-fees";
 
 export interface BaseOrderBuildOptions {
   maker: string;
@@ -165,7 +165,7 @@ export const getBuildInfo = async (
       collectionResult.marketplace_fees?.opensea;
 
     if (collectionResult.marketplace_fees?.opensea == null) {
-      openseaMarketplaceFees = await getCollectionOpenseaFees(
+      openseaMarketplaceFees = await marketplaceFees.getCollectionOpenseaFees(
         collection,
         fromBuffer(collectionResult.contract),
         totalBps
