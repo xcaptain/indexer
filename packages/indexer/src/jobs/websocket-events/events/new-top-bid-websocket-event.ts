@@ -104,7 +104,6 @@ export class NewTopBidWebsocketEvent {
     }
 
     try {
-      // eslint-disable-next-line no-console
       logger.info(
         "new-top-bid-websocket-event",
         `Triggering event. orderId=${data.orderId}, tokenSetId=${order.token_set_id}`
@@ -121,8 +120,7 @@ export class NewTopBidWebsocketEvent {
         )
       );
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      logger.error("new-top-bid-websocket-event", `Error triggering event. ${e}`);
     }
 
     const server = new Pusher.default({
