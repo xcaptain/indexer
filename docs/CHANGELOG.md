@@ -1,3 +1,10 @@
+# [6.0.0-dev.1](https://github.com/reservoirprotocol/indexer/compare/v5.277.0-dev.1...v6.0.0-dev.1) (2023-03-22)
+
+
+### Features
+
+* added metrics api ([73c49a7](https://github.com/reservoirprotocol/indexer/commit/73c49a78444b5f22f813bc144209ee90cc542029))
+
 # [5.277.0-dev.1](https://github.com/reservoirprotocol/indexer/compare/v5.276.1...v5.277.0-dev.1) (2023-03-22)
 
 
