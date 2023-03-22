@@ -1,3 +1,30 @@
+# [6.0.0-dev.8](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.7...v6.0.0-dev.8) (2023-03-22)
+
+
+### Bug Fixes
+
+* blur sweeping ([f136fc0](https://github.com/reservoirprotocol/indexer/commit/f136fc03f5d661d1eacdb449800960930d22e426))
+* cleanup ([67185a2](https://github.com/reservoirprotocol/indexer/commit/67185a288e388e7f65503c132a16471044ec374b))
+* configure pipeline ([d5b1e5c](https://github.com/reservoirprotocol/indexer/commit/d5b1e5c779eb1bbc6345933d812cc4b9bcd0529c))
+* ensure WHERE is added when no prior conditions ([92a3a5e](https://github.com/reservoirprotocol/indexer/commit/92a3a5eb3a86afc86df077b881d798a1f7a28891))
+* fix tokens timeout for large collectionsSetid ([ed2ae75](https://github.com/reservoirprotocol/indexer/commit/ed2ae750ff3b43cc2a780c4f28fb261ed6208265))
+* performance improvements on owners/v1 and activity/v5 ([2183507](https://github.com/reservoirprotocol/indexer/commit/21835073f8341b8acb8bb7f07b322f3b0273fc6f))
+* remove package-lock.json ([e056e26](https://github.com/reservoirprotocol/indexer/commit/e056e2614b3084fd35dbccc21ab2ba716a9cd7d0))
+* semantic-release config ([b0d711b](https://github.com/reservoirprotocol/indexer/commit/b0d711b26cf4ffed2e471eae90e8e25487041dc8))
+* semantic-release config ([1aa2455](https://github.com/reservoirprotocol/indexer/commit/1aa2455140ac09e10e17b5ceb3374bc4fc9b455b))
+* specify table for normalized_floor_sell_value when not doing union ([b604ecf](https://github.com/reservoirprotocol/indexer/commit/b604ecfb774ed4fc6b8855ffdf8e933e8d2af144))
+* specify table in all cases to avoid ambiguity ([74771a0](https://github.com/reservoirprotocol/indexer/commit/74771a064ca16d84aa5fb547c71888f7bf165b9d))
+* trigger version bump ([51a8079](https://github.com/reservoirprotocol/indexer/commit/51a80795af726f6f71beaa9cd5559d33c633aadd))
+* variable names ([d156384](https://github.com/reservoirprotocol/indexer/commit/d1563844bd43261760f4675d2c5142e5ed745ea0))
+
+
+### Features
+
+* count only valid http code calls ([2f68395](https://github.com/reservoirprotocol/indexer/commit/2f68395d9f29490c629a7a97ec01afd7b3f27e52))
+* get status code if error ([247fc55](https://github.com/reservoirprotocol/indexer/commit/247fc555f5050503f559e78e18f9dd945913a1df))
+* merge main ([8682561](https://github.com/reservoirprotocol/indexer/commit/8682561f5d86fd756ae8bf8088a5ada186442219))
+* update yarn ([b08b6af](https://github.com/reservoirprotocol/indexer/commit/b08b6af66d4a24fce766e714d434a925821b1210))
+
 # [6.0.0-dev.7](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.6...v6.0.0-dev.7) (2023-03-22)
 
 
