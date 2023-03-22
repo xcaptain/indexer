@@ -70,7 +70,8 @@ export type EventKind =
   | "x2y2"
   | "zeroex-v4"
   | "zora"
-  | "zeroex-v2";
+  | "zeroex-v2"
+  | "alienswap";
 
 // Event sub-kind in each of the above protocol/standard
 export type EventSubKind =
@@ -187,7 +188,12 @@ export type EventSubKind =
   | "superrare-accept-offer"
   | "superrare-auction-settled"
   | "superrare-set-sale-price"
-  | "zeroex-v2-fill";
+  | "zeroex-v2-fill"
+  | "alienswap-order-cancelled"
+  | "alienswap-order-filled"
+  | "alienswap-orders-matched"
+  | "alienswap-counter-incremented"
+  | "alienswap-order-validated";
 
 export type EventData = {
   kind: EventKind;
@@ -312,6 +318,11 @@ const allEventData = [
   superrare.auctionSettled,
   superrare.setSalePrice,
   zeroExV2.fill,
+  seaportV14.counterIncremented,
+  seaportV14.orderCancelled,
+  seaportV14.orderFulfilled,
+  seaportV14.ordersMatched,
+  seaportV14.orderValidated,
 ];
 
 export const getEventData = (events?: string[]) => {

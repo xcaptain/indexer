@@ -860,6 +860,82 @@ export class Router {
       }
     }
 
+    if (
+      details.every(
+        ({ kind, fees, currency, order }) =>
+          kind === "alienswap" &&
+          buyInCurrency === currency &&
+          // All orders must have the same currency and conduit
+          currency === details[0].currency &&
+          (order as Sdk.Alienswap.Order).params.conduitKey ===
+            (details[0].order as Sdk.Alienswap.Order).params.conduitKey &&
+          !fees?.length
+      ) &&
+      !options?.globalFees?.length &&
+      !options?.forceRouter &&
+      !options?.relayer
+    ) {
+      const exchange = new Sdk.Alienswap.Exchange(this.chainId);
+
+      const conduit = exchange.deriveConduit(
+        (details[0].order as Sdk.Alienswap.Order).params.conduitKey
+      );
+
+      let approval: FTApproval | undefined;
+      if (!isETH(this.chainId, details[0].currency)) {
+        approval = {
+          currency: details[0].currency,
+          owner: taker,
+          operator: conduit,
+          txData: generateFTApprovalTxData(details[0].currency, taker, conduit),
+        };
+      }
+
+      if (details.length === 1) {
+        const order = details[0].order as Sdk.Alienswap.Order;
+        return {
+          txs: [
+            {
+              approvals: approval ? [approval] : [],
+              permits: [],
+              txData: await exchange.fillOrderTx(
+                taker,
+                order,
+                order.buildMatching({ amount: details[0].amount }),
+                {
+                  ...options,
+                  ...options?.directFillingData,
+                }
+              ),
+              orderIndexes: [0],
+            },
+          ],
+          success: [true],
+        };
+      } else {
+        const orders = details.map((d) => d.order as Sdk.Alienswap.Order);
+        return {
+          txs: [
+            {
+              approvals: approval ? [approval] : [],
+              permits: [],
+              txData: await exchange.fillOrdersTx(
+                taker,
+                orders,
+                orders.map((order, i) => order.buildMatching({ amount: details[i].amount })),
+                {
+                  ...options,
+                  ...options?.directFillingData,
+                }
+              ),
+              orderIndexes: orders.map((_, i) => i),
+            },
+          ],
+          success: orders.map(() => true),
+        };
+      }
+    }
+
     const getFees = (ownDetails: ListingFillDetails[]) => [
       // Global fees
       ...(options?.globalFees ?? [])

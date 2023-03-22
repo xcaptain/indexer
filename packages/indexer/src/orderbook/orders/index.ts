@@ -21,6 +21,7 @@ export * as rarible from "@/orderbook/orders/rarible";
 export * as nftx from "@/orderbook/orders/nftx";
 export * as manifold from "@/orderbook/orders/manifold";
 export * as superrare from "@/orderbook/orders/superrare";
+export * as alienswap from "@/orderbook/orders/alienswap";
 
 // Imports
 import * as Sdk from "@reservoir0x/sdk";
@@ -71,7 +72,8 @@ export type OrderKind =
   | "okex"
   | "bend-dao"
   | "superrare"
-  | "zeroex-v2";
+  | "zeroex-v2"
+  | "alienswap";
 
 // In case we don't have the source of an order readily available, we use
 // a default value where possible (since very often the exchange protocol
@@ -413,6 +415,14 @@ export const generateListingDetailsV6 = (
         kind: "superrare",
         ...common,
         order: new Sdk.SuperRare.Order(config.chainId, order.rawData),
+      };
+    }
+
+    case "alienswap": {
+      return {
+        kind: "alienswap",
+        ...common,
+        order: new Sdk.Alienswap.Order(config.chainId, order.rawData),
       };
     }
 

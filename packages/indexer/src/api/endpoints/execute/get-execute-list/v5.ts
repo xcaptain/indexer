@@ -25,6 +25,10 @@ import * as seaportCheck from "@/orderbook/orders/seaport/check";
 import * as seaportV14SellToken from "@/orderbook/orders/seaport-v1.4/build/sell/token";
 import * as seaportV14Check from "@/orderbook/orders/seaport-v1.4/check";
 
+// Alienswap
+import * as alienswapSellToken from "@/orderbook/orders/alienswap/build/sell/token";
+import * as alienswapCheck from "@/orderbook/orders/alienswap/check";
+
 // X2Y2
 import * as x2y2SellToken from "@/orderbook/orders/x2y2/build/sell/token";
 import * as x2y2Check from "@/orderbook/orders/x2y2/check";
@@ -98,7 +102,8 @@ export const getExecuteListV5Options: RouteOptions = {
               "x2y2",
               "universe",
               "infinity",
-              "flow"
+              "flow",
+              "alienswap"
             )
             .default("seaport-v1.4")
             .description("Exchange protocol used to create order. Example: `seaport-v1.4`"),
@@ -239,6 +244,16 @@ export const getExecuteListV5Options: RouteOptions = {
           order: {
             kind: "seaport-v1.4";
             data: Sdk.SeaportV14.Types.OrderComponents;
+          };
+          orderbook: string;
+          orderbookApiKey?: string;
+          source?: string;
+          orderIndex: number;
+        }[],
+        alienswap: [] as {
+          order: {
+            kind: "alienswap";
+            data: Sdk.Alienswap.Types.OrderComponents;
           };
           orderbook: string;
           orderbookApiKey?: string;
@@ -648,6 +663,81 @@ export const getExecuteListV5Options: RouteOptions = {
                 break;
               }
 
+              case "alienswap": {
+                if (!["reservoir"].includes(params.orderbook)) {
+                  return errors.push({ message: "Unsupported orderbook", orderIndex: i });
+                }
+
+                const options = params.options?.[params.orderKind] as
+                  | {
+                      useOffChainCancellation?: boolean;
+                      replaceOrderId?: string;
+                    }
+                  | undefined;
+
+                const order = await alienswapSellToken.build({
+                  ...params,
+                  ...options,
+                  orderbook: params.orderbook as "reservoir",
+                  maker,
+                  contract,
+                  tokenId,
+                  source,
+                });
+
+                // Will be set if an approval is needed before listing
+                let approvalTx: TxData | undefined;
+
+                // Check the order's fillability
+                try {
+                  await alienswapCheck.offChainCheck(order, { onChainApprovalRecheck: true });
+                } catch (error: any) {
+                  switch (error.message) {
+                    case "no-balance-no-approval":
+                    case "no-balance": {
+                      return errors.push({ message: "Maker does not own token", orderIndex: i });
+                    }
+
+                    case "no-approval": {
+                      // Generate an approval transaction
+
+                      const exchange = new Sdk.Alienswap.Exchange(config.chainId);
+                      const info = order.getInfo()!;
+
+                      const kind = order.params.kind?.startsWith("erc721") ? "erc721" : "erc1155";
+                      approvalTx = (
+                        kind === "erc721"
+                          ? new Sdk.Common.Helpers.Erc721(baseProvider, info.contract)
+                          : new Sdk.Common.Helpers.Erc1155(baseProvider, info.contract)
+                      ).approveTransaction(maker, exchange.deriveConduit(order.params.conduitKey));
+
+                      break;
+                    }
+                  }
+                }
+
+                steps[0].items.push({
+                  status: approvalTx ? "incomplete" : "complete",
+                  data: approvalTx,
+                  orderIndexes: [i],
+                });
+
+                bulkOrders["alienswap"].push({
+                  order: {
+                    kind: params.orderKind,
+                    data: {
+                      ...order.params,
+                    },
+                  },
+                  orderbook: params.orderbook,
+                  orderbookApiKey: params.orderbookApiKey,
+                  source,
+                  orderIndex: i,
+                });
+
+                break;
+              }
+
               case "looks-rare": {
                 if (!["reservoir", "looks-rare"].includes(params.orderbook)) {
                   return errors.push({ message: "Unsupported orderbook", orderIndex: i });
@@ -946,6 +1036,69 @@ export const getExecuteListV5Options: RouteOptions = {
                     orderbookApiKey: o.orderbookApiKey,
                     bulkData: {
                       kind: "seaport-v1.4",
+                      data: {
+                        orderIndex: i,
+                        merkleProof: proofs[i],
+                      },
+                    },
+                  })),
+                  source,
+                },
+              },
+            },
+            orderIndexes: orders.map(({ orderIndex }) => orderIndex),
+          });
+        }
+      }
+
+      // Post any bulk alienswap orders together
+      {
+        const exchange = new Sdk.Alienswap.Exchange(config.chainId);
+
+        const orders = bulkOrders["alienswap"];
+        if (orders.length === 1) {
+          const order = new Sdk.Alienswap.Order(config.chainId, orders[0].order.data);
+          steps[1].items.push({
+            status: "incomplete",
+            data: {
+              sign: order.getSignatureData(),
+              post: {
+                endpoint: "/order/v3",
+                method: "POST",
+                body: {
+                  order: {
+                    kind: "alienswap",
+                    data: {
+                      ...order.params,
+                    },
+                  },
+                  orderbook: orders[0].orderbook,
+                  orderbookApiKey: orders[0].orderbookApiKey,
+                  source,
+                },
+              },
+            },
+            orderIndexes: [orders[0].orderIndex],
+          });
+        } else if (orders.length > 1) {
+          const { signatureData, proofs } = exchange.getBulkSignatureDataWithProofs(
+            orders.map((o) => new Sdk.Alienswap.Order(config.chainId, o.order.data))
+          );
+
+          steps[1].items.push({
+            status: "incomplete",
+            data: {
+              sign: signatureData,
+              post: {
+                endpoint: "/order/v4",
+                method: "POST",
+                body: {
+                  items: orders.map((o, i) => ({
+                    order: o.order,
+                    orderbook: o.orderbook,
+                    orderbookApiKey: o.orderbookApiKey,
+                    bulkData: {
+                      kind: "alienswap",
                       data: {
                         orderIndex: i,
                         merkleProof: proofs[i],

@@ -148,6 +148,10 @@ export type GenericOrder =
   | {
       kind: "superrare";
       order: Sdk.SuperRare.Order;
+    }
+  | {
+      kind: "alienswap";
+      order: Sdk.Alienswap.Order;
     };
 
 // Listings
