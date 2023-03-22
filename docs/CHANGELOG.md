@@ -1,3 +1,10 @@
+# [5.277.0-dev.5](https://github.com/reservoirprotocol/indexer/compare/v5.277.0-dev.4...v5.277.0-dev.5) (2023-03-22)
+
+
+### Features
+
+* support passing multiple keys to metrics api ([5fdcec1](https://github.com/reservoirprotocol/indexer/commit/5fdcec1dc3ec0ea2db5ae19d05945fa8ab7f3f96))
+
 # [5.277.0-dev.4](https://github.com/reservoirprotocol/indexer/compare/v5.277.0-dev.3...v5.277.0-dev.4) (2023-03-22)
 
 
