@@ -131,6 +131,9 @@ export const getCollectionSupportedMarketplacesV1Options: RouteOptions = {
         );
       }
 
+      // Refresh opensea fees
+      await marketplaceFees.refreshCollectionOpenseaFeesAsync(params.collection);
+
       const openseaRoyalties: { bps: number; recipient: string }[] =
         collectionResult.new_royalties?.opensea;
       const maxOpenseaRoyaltiesBps = openseaRoyalties

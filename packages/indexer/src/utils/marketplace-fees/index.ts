@@ -4,6 +4,11 @@ import _ from "lodash";
 import { idb } from "@/common/db";
 import { Tokens } from "@/models/tokens";
 import { tryGetCollectionOpenseaFees } from "@/utils/opensea";
+import { redis } from "@/common/redis";
+import { now } from "@/common/utils";
+import { logger } from "@/common/logger";
+import * as collectionUpdatesMetadata from "@/jobs/collection-updates/metadata-queue";
+import { Collections } from "@/models/collections";
 
 export type MarketPlaceFee = {
   recipient: string;
@@ -84,4 +89,25 @@ export const getCollectionOpenseaFees = async (
   }
 
   return openseaMarketplaceFees;
+};
+
+export const refreshCollectionOpenseaFeesAsync = async (collection: string) => {
+  const cacheKey = `refresh-collection-opensea-fees:${collection}`;
+
+  if ((await redis.set(cacheKey, now(), "EX", 3600, "NX")) === "OK") {
+    logger.info("refreshCollectionOpenseaFeesAsync", `refresh fees. collection=${collection}}`);
+
+    try {
+      const tokenId = await Tokens.getSingleToken(collection);
+      const collectionResult = await Collections.getById(collection);
+
+      await collectionUpdatesMetadata.addToQueue(
+        collectionResult!.contract,
+        tokenId,
+        collectionResult!.community
+      );
+    } catch {
+      await redis.del(cacheKey);
+    }
+  }
 };
