@@ -1,3 +1,11 @@
+# [5.277.0-dev.4](https://github.com/reservoirprotocol/indexer/compare/v5.277.0-dev.3...v5.277.0-dev.4) (2023-03-22)
+
+
+### Bug Fixes
+
+* remove extra line ([8c36855](https://github.com/reservoirprotocol/indexer/commit/8c36855e0d6ed7d8c393ff348da6ba947e6f4139))
+* update collection activity v6 to include attributes ([4746779](https://github.com/reservoirprotocol/indexer/commit/47467790d76c21d2151e3700fff8c310428051f5))
+
 # [5.277.0-dev.3](https://github.com/reservoirprotocol/indexer/compare/v5.277.0-dev.2...v5.277.0-dev.3) (2023-03-22)
 
 
