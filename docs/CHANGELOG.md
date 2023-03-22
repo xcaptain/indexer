@@ -25,6 +25,28 @@
 
 ### Bug Fixes
 
+* cleanup code ([05ec0eb](https://github.com/reservoirprotocol/indexer/commit/05ec0eb0843957b84f546eea8261070bd9dfafd6))
+* remove file ([0aea303](https://github.com/reservoirprotocol/indexer/commit/0aea303b33b2f79336df8f5069b3adea039bef0b))
+* semantic-release config ([1db26f9](https://github.com/reservoirprotocol/indexer/commit/1db26f99553e7a1dff683d127686c66a369c6c1a))
+
+
+### Features
+
+* add collection to new top bid event objct ([3111230](https://github.com/reservoirprotocol/indexer/commit/31112309a9a7c9cfaf141e9137a449230ddac773))
+* add floor ask to top bid event ([996e82c](https://github.com/reservoirprotocol/indexer/commit/996e82c6e24a84ed0c5105417bb8300a61d3eb18))
+* add temporary logging to test out update ([67e3fc1](https://github.com/reservoirprotocol/indexer/commit/67e3fc1678c9c4da339c248ad8c39481a007ac07))
+* added metrics api ([73c49a7](https://github.com/reservoirprotocol/indexer/commit/73c49a78444b5f22f813bc144209ee90cc542029))
+* remove collection query, add floors query to orders query ([f7699f4](https://github.com/reservoirprotocol/indexer/commit/f7699f42ae915fdfd497d2233b6312706631a5b4))
+* remove day1 volume calculation from previous implemenmtation ([3151d53](https://github.com/reservoirprotocol/indexer/commit/3151d53011d861490b7ee9b213f42c08184dea0f))
+* remove floor ask from object ([5b5bc3e](https://github.com/reservoirprotocol/indexer/commit/5b5bc3e26d2bf42b77f6504c5227aae493e745de))
+* support multiple chains in one metric redis ([51043c1](https://github.com/reservoirprotocol/indexer/commit/51043c19d7fc39593460c328700b8c3c0b960387))
+* support multiple chains in one metric redis ([75ed6f8](https://github.com/reservoirprotocol/indexer/commit/75ed6f8ea351d4647b87d9c229b069c366cb090d))
+
+# [6.0.0-dev.1](https://github.com/reservoirprotocol/indexer/compare/v5.277.0-dev.1...v6.0.0-dev.1) (2023-03-22)
+
+
+### Bug Fixes
+
 * semantic-release config ([1db26f9](https://github.com/reservoirprotocol/indexer/commit/1db26f99553e7a1dff683d127686c66a369c6c1a))
 
 
