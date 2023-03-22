@@ -1,6 +1,21 @@
 # [6.0.0-dev.1](https://github.com/reservoirprotocol/indexer/compare/v5.277.0-dev.1...v6.0.0-dev.1) (2023-03-22)
 
 
+### Bug Fixes
+
+* semantic-release config ([1db26f9](https://github.com/reservoirprotocol/indexer/commit/1db26f99553e7a1dff683d127686c66a369c6c1a))
+
+
+### Features
+
+* added metrics api ([73c49a7](https://github.com/reservoirprotocol/indexer/commit/73c49a78444b5f22f813bc144209ee90cc542029))
+* remove day1 volume calculation from previous implemenmtation ([3151d53](https://github.com/reservoirprotocol/indexer/commit/3151d53011d861490b7ee9b213f42c08184dea0f))
+* support multiple chains in one metric redis ([51043c1](https://github.com/reservoirprotocol/indexer/commit/51043c19d7fc39593460c328700b8c3c0b960387))
+* support multiple chains in one metric redis ([75ed6f8](https://github.com/reservoirprotocol/indexer/commit/75ed6f8ea351d4647b87d9c229b069c366cb090d))
+
+# [6.0.0-dev.1](https://github.com/reservoirprotocol/indexer/compare/v5.277.0-dev.1...v6.0.0-dev.1) (2023-03-22)
+
+
 ### Features
 
 * added metrics api ([73c49a7](https://github.com/reservoirprotocol/indexer/commit/73c49a78444b5f22f813bc144209ee90cc542029))
