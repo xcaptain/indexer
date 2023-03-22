@@ -48,7 +48,8 @@ export const postOrderV3Options: RouteOptions = {
             "universe",
             "forward",
             "infinity",
-            "flow"
+            "flow",
+            "alienswap"
           )
           .required(),
         data: Joi.object().required(),
@@ -335,6 +336,33 @@ export const postOrderV3Options: RouteOptions = {
           }
 
           return { message: "Success", orderId, crossPostingOrderId: crossPostingOrder?.id };
+        }
+
+        case "alienswap": {
+          if (!["reservoir"].includes(orderbook)) {
+            throw new Error("Unknown orderbook");
+          }
+
+          const orderId = new Sdk.Alienswap.Order(config.chainId, order.data).hash();
+          const [result] = await orders.alienswap.save([
+            {
+              kind: "full",
+              orderParams: order.data,
+              isReservoir: true,
+              metadata: {
+                schema,
+                source,
+              },
+            },
+          ]);
+
+          if (!["success", "already-exists"].includes(result.status)) {
+            const error = Boom.badRequest(result.status);
+            error.output.payload.orderId = orderId;
+            throw error;
+          }
+
+          return { message: "Success", orderId };
         }
 
         case "seaport-forward": {
