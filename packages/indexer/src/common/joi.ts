@@ -432,11 +432,15 @@ export const getJoiOrderObject = async (order: {
   normalizeRoyalties: boolean;
   missingRoyalties: any;
   dynamic?: boolean;
+  token?: string;
 }) => {
   const sources = await Sources.getInstance();
   let source: SourcesEntity | undefined;
   if (order.tokenSetId?.startsWith("token")) {
     const [, contract, tokenId] = order.tokenSetId.split(":");
+    source = sources.get(Number(order.sourceIdInt), contract, tokenId);
+  } else if (order.token) {
+    const [contract, tokenId] = order.token.split(":");
     source = sources.get(Number(order.sourceIdInt), contract, tokenId);
   } else {
     source = sources.get(Number(order.sourceIdInt));
@@ -506,7 +510,9 @@ export const getJoiOrderObject = async (order: {
           order.prices.currency ? fromBuffer(order.prices.currency) : undefined,
           order.missingRoyalties ? order.missingRoyalties : undefined
         )
-      : null,
+      : order.dynamic !== undefined
+      ? null
+      : undefined,
     criteria: order.criteria,
     source: {
       id: source?.address,
@@ -519,7 +525,8 @@ export const getJoiOrderObject = async (order: {
     feeBreakdown: feeBreakdown,
     expiration: Number(order.expiration),
     isReservoir: order.isReservoir,
-    isDynamic: Boolean(order.dynamic || order.kind === "sudoswap"),
+    isDynamic:
+      order.dynamic !== undefined ? Boolean(order.dynamic || order.kind === "sudoswap") : undefined,
     createdAt: new Date(order.createdAt * 1000).toISOString(),
     updatedAt: new Date(order.updatedAt).toISOString(),
     rawData: order.includeRawData ? order.rawData : undefined,
