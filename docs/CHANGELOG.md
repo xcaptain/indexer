@@ -1,3 +1,10 @@
+# [6.0.0-dev.11](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.10...v6.0.0-dev.11) (2023-03-23)
+
+
+### Features
+
+* added refresh logic ([518755e](https://github.com/reservoirprotocol/indexer/commit/518755e985529e638d212a6a10ce232ff5c6c6c5))
+
 # [6.0.0-dev.10](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.9...v6.0.0-dev.10) (2023-03-22)
 
 
