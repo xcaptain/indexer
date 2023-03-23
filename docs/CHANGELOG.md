@@ -1,3 +1,10 @@
+# [6.0.0-dev.13](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.12...v6.0.0-dev.13) (2023-03-23)
+
+
+### Features
+
+* cleanup floors in event object ([12c5112](https://github.com/reservoirprotocol/indexer/commit/12c51129a57bde85681de5f51137d6a2c1fc556c))
+
 # [6.0.0-dev.12](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.11...v6.0.0-dev.12) (2023-03-23)
 
 
