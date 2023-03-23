@@ -3,6 +3,22 @@
 
 ### Bug Fixes
 
+* dont return collections with 0 tokens ([bdd425f](https://github.com/reservoirprotocol/indexer/commit/bdd425fa30513ba09a8e9cadc0d16f721d4c205b))
+* fix timestamp being in long-form ([0a4b8bf](https://github.com/reservoirprotocol/indexer/commit/0a4b8bf5a1d017dfc5ea38a5fa8bd0cc4de960f7))
+* more fixes ([8c28c1e](https://github.com/reservoirprotocol/indexer/commit/8c28c1eb8ac0da8f1107b4b6b94355ea6035bfd7))
+* recalc token_count only for old collection as it is already done for new collection ([c231d08](https://github.com/reservoirprotocol/indexer/commit/c231d0811ef0104e8d9fc7118b63e269960b8ba5))
+* update collections.token_count after token is assigned new collectionId ([9d664b5](https://github.com/reservoirprotocol/indexer/commit/9d664b5f5d66c65f457717cef0f04b105d22c931))
+
+
+### Features
+
+* add support for filtering out EOA-only listings ([d9c38e5](https://github.com/reservoirprotocol/indexer/commit/d9c38e5fae9b07a1fc8282c9bb3b64e3abe184d1))
+
+# [6.0.0-dev.15](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.14...v6.0.0-dev.15) (2023-03-23)
+
+
+### Bug Fixes
+
 * more fixes ([8c28c1e](https://github.com/reservoirprotocol/indexer/commit/8c28c1eb8ac0da8f1107b4b6b94355ea6035bfd7))
 
 
