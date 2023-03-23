@@ -1,3 +1,20 @@
+# [6.0.0-dev.14](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.13...v6.0.0-dev.14) (2023-03-23)
+
+
+### Bug Fixes
+
+* add error handling ([cb38267](https://github.com/reservoirprotocol/indexer/commit/cb38267efd86360cd7bed2e0b6f1b45065ffc0d1))
+* pusher + redis pubsub in parallel ([7e030c0](https://github.com/reservoirprotocol/indexer/commit/7e030c0b466089790d70d5048e282b86a568a771))
+
+
+### Features
+
+* add error logging for redis pub ([a848f7f](https://github.com/reservoirprotocol/indexer/commit/a848f7f609d16c17fa3d718b0e644a85da539e11))
+* add logger websocket event ([6393427](https://github.com/reservoirprotocol/indexer/commit/6393427b37a392444220b8df2094c7b88fe7d6b4))
+* add redisWebsocketUrl to config ([98ec961](https://github.com/reservoirprotocol/indexer/commit/98ec961e57ac73dc7eba73167ddaa583c24b9358))
+* switch activity event from pusher to redis pub ([6f06d3f](https://github.com/reservoirprotocol/indexer/commit/6f06d3f848bf4f988a3b6d00ac9c0c4ff4ad8cd9))
+* switch from pusher to redis pub ([2588afd](https://github.com/reservoirprotocol/indexer/commit/2588afd205b762dea6eb9a024537f92e899a8c8d))
+
 # [6.0.0-dev.13](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.12...v6.0.0-dev.13) (2023-03-23)
 
 
