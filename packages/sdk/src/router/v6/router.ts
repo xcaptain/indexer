@@ -907,10 +907,10 @@ export class Router {
                   ...options?.directFillingData,
                 }
               ),
-              orderIndexes: [0],
+              orderIds: [details[0].orderId],
             },
           ],
-          success: [true],
+          success: { [details[0].orderId]: true },
         };
       } else {
         const orders = details.map((d) => d.order as Sdk.Alienswap.Order);
@@ -928,10 +928,10 @@ export class Router {
                   ...options?.directFillingData,
                 }
               ),
-              orderIndexes: orders.map((_, i) => i),
+              orderIds: details.map((d) => d.orderId),
             },
           ],
-          success: orders.map(() => true),
+          success: Object.fromEntries(details.map((d) => [d.orderId, true])),
         };
       }
     }
