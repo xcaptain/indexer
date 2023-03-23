@@ -1,3 +1,10 @@
+# [6.0.0-dev.15](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.14...v6.0.0-dev.15) (2023-03-23)
+
+
+### Features
+
+* add support for filtering out EOA-only listings ([d9c38e5](https://github.com/reservoirprotocol/indexer/commit/d9c38e5fae9b07a1fc8282c9bb3b64e3abe184d1))
+
 # [6.0.0-dev.14](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.13...v6.0.0-dev.14) (2023-03-23)
 
 
