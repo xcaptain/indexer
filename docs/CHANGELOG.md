@@ -5,6 +5,13 @@
 
 * generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
 
+# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-23)
+
+
+### Bug Fixes
+
+* generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
+
 # [6.0.0-dev.18](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.17...v6.0.0-dev.18) (2023-03-23)
 
 
