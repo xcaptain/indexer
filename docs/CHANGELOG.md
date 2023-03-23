@@ -1,3 +1,10 @@
+# [6.0.0-dev.18](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.17...v6.0.0-dev.18) (2023-03-23)
+
+
+### Bug Fixes
+
+* trigger pipeline ([ad9ae17](https://github.com/reservoirprotocol/indexer/commit/ad9ae171b3ed1ff4ed5dc4cef5ffc81eb571f009))
+
 # [6.0.0-dev.15](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.14...v6.0.0-dev.15) (2023-03-23)
 
 
