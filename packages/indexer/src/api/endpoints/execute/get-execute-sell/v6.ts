@@ -3,6 +3,7 @@
 import * as Boom from "@hapi/boom";
 import { Request, RouteOptions } from "@hapi/hapi";
 import * as Sdk from "@reservoir0x/sdk";
+import { FillBidsResult } from "@reservoir0x/sdk/src/router/v6/types";
 import Joi from "joi";
 
 import { inject } from "@/api/index";
@@ -12,7 +13,7 @@ import { baseProvider } from "@/common/provider";
 import { bn, formatPrice, fromBuffer, now, regex, toBuffer } from "@/common/utils";
 import { config } from "@/config/index";
 import { Sources } from "@/models/sources";
-import { generateBidDetailsV6 } from "@/orderbook/orders";
+import { generateBidDetailsV6, routerOnRecoverableError } from "@/orderbook/orders";
 import { getNftApproval } from "@/orderbook/orders/common/helpers";
 import { getCurrency } from "@/utils/currencies";
 import { tryGetTokensSuspiciousStatus } from "@/utils/opensea";
@@ -21,13 +22,13 @@ const version = "v6";
 
 export const getExecuteSellV6Options: RouteOptions = {
   description: "Sell tokens (accept bids)",
-  tags: ["api", "Router"],
+  tags: ["api", "x-deprecated"],
   timeout: {
     server: 20 * 1000,
   },
   plugins: {
     "hapi-swagger": {
-      order: 10,
+      deprecated: true,
     },
   },
   validate: {
@@ -106,7 +107,7 @@ export const getExecuteSellV6Options: RouteOptions = {
           id: Joi.string().required(),
           action: Joi.string().required(),
           description: Joi.string().required(),
-          kind: Joi.string().valid("transaction").required(),
+          kind: Joi.string().valid("signature", "transaction").required(),
           items: Joi.array()
             .items(
               Joi.object({
@@ -115,6 +116,12 @@ export const getExecuteSellV6Options: RouteOptions = {
               })
             )
             .required(),
+        })
+      ),
+      errors: Joi.array().items(
+        Joi.object({
+          message: Joi.string(),
+          orderId: Joi.number(),
         })
       ),
       path: Joi.array().items(
@@ -138,7 +145,7 @@ export const getExecuteSellV6Options: RouteOptions = {
   handler: async (request: Request) => {
     const payload = request.payload as any;
 
-    let path: any;
+    let path: any[] = [];
     try {
       let orderResult: any;
 
@@ -324,7 +331,7 @@ export const getExecuteSellV6Options: RouteOptions = {
 
       // Partial Seaport orders require knowing the owner
       let owner: string | undefined;
-      if (["seaport", "seaport-v1.4"].includes(orderResult.kind)) {
+      if (["seaport-partial", "seaport-v1.4-partial"].includes(orderResult.kind)) {
         const ownerResult = await idb.oneOrNone(
           `
             SELECT
@@ -353,6 +360,10 @@ export const getExecuteSellV6Options: RouteOptions = {
           unitPrice: orderResult.price,
           rawData: orderResult.raw_data,
           fees,
+          isProtected:
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (orderResult.raw_data as any).zone ===
+            Sdk.SeaportV14.Addresses.OpenSeaProtectedOffersZone[config.chainId],
         },
         {
           kind: orderResult.token_kind,
@@ -384,14 +395,6 @@ export const getExecuteSellV6Options: RouteOptions = {
         return { path };
       }
 
-      const router = new Sdk.RouterV6.Router(config.chainId, baseProvider, {
-        x2y2ApiKey: payload.x2y2ApiKey ?? config.x2y2ApiKey,
-        cbApiKey: config.cbApiKey,
-      });
-      const { txData } = await router.fillBidsTx([bidDetails!], payload.taker, {
-        source: payload.source,
-      });
-
       // Set up generic filling steps
       const steps: {
         id: string;
@@ -419,6 +422,88 @@ export const getExecuteSellV6Options: RouteOptions = {
           items: [],
         },
       ];
+
+      if (
+        orderResult?.raw_data?.zone ===
+        Sdk.SeaportV14.Addresses.OpenSeaProtectedOffersZone[config.chainId]
+      ) {
+        // Ensure the taker owns the NFTs to get sold
+        const takerIsOwner = await idb.oneOrNone(
+          `
+            SELECT
+              1
+            FROM nft_balances
+            WHERE nft_balances.contract = $/contract/
+              AND nft_balances.token_id = $/tokenId/
+              AND nft_balances.amount >= $/quantity/
+              AND nft_balances.owner = $/owner/
+            LIMIT 1
+          `,
+          {
+            contract: toBuffer(contract),
+            tokenId,
+            quantity: payload.quantity ?? 1,
+            owner: toBuffer(payload.taker),
+          }
+        );
+        if (!takerIsOwner) {
+          throw Boom.badRequest("Taker is not the owner of the token to sell");
+        }
+      }
+
+      const router = new Sdk.RouterV6.Router(config.chainId, baseProvider, {
+        x2y2ApiKey: payload.x2y2ApiKey ?? config.x2y2ApiKey,
+        cbApiKey: config.cbApiKey,
+        orderFetcherBaseUrl: config.orderFetcherBaseUrl,
+        orderFetcherApiKey: config.orderFetcherApiKey,
+      });
+
+      const errors: { orderId: string; message: string }[] = [];
+
+      let result: FillBidsResult;
+      try {
+        result = await router.fillBidsTx([bidDetails!], payload.taker, {
+          source: payload.source,
+          onRecoverableError: async (kind, error, data) => {
+            errors.push({
+              orderId: data.orderId,
+              message: error.response?.data ?? error.message,
+            });
+            await routerOnRecoverableError(kind, error, data);
+          },
+        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        const boomError = Boom.badRequest(error.message);
+        boomError.output.payload.errors = errors;
+        throw boomError;
+      }
+
+      const { txData, approvals } = result;
+
+      // Direct filling on OpenSea might require an approval
+      if (txData.to === Sdk.SeaportV14.Addresses.Exchange[config.chainId]) {
+        const isApproved = await getNftApproval(
+          bidDetails.contract,
+          payload.taker,
+          Sdk.SeaportV14.Addresses.OpenseaConduit[config.chainId]
+        );
+
+        if (!isApproved) {
+          steps[0].items.push({
+            status: "incomplete",
+            data: {
+              ...approvals[0].txData,
+              maxFeePerGas: payload.maxFeePerGas
+                ? bn(payload.maxFeePerGas).toHexString()
+                : undefined,
+              maxPriorityFeePerGas: payload.maxPriorityFeePerGas
+                ? bn(payload.maxPriorityFeePerGas).toHexString()
+                : undefined,
+            },
+          });
+        }
+      }
 
       // Forward / Rarible bids are to be filled directly (because we have no modules for them yet)
       if (bidDetails.kind === "forward") {
@@ -574,15 +659,18 @@ export const getExecuteSellV6Options: RouteOptions = {
 
       return {
         steps,
+        errors,
         path,
       };
     } catch (error) {
-      logger.error(
-        `get-execute-sell-${version}-handler`,
-        `Handler failure: ${error} (path = ${JSON.stringify(path)}, request = ${JSON.stringify(
-          payload
-        )})`
-      );
+      if (!(error instanceof Boom.Boom)) {
+        logger.error(
+          `get-execute-sell-${version}-handler`,
+          `Handler failure: ${error} (path = ${JSON.stringify(path)}, request = ${JSON.stringify(
+            payload
+          )})`
+        );
+      }
       throw error;
     }
   },

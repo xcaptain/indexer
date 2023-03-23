@@ -3,7 +3,7 @@ import * as Boom from "@hapi/boom";
 import { Request, RouteOptions } from "@hapi/hapi";
 import * as Sdk from "@reservoir0x/sdk";
 import * as SeaportPermit from "@reservoir0x/sdk/dist/router/v6/permits/seaport";
-import { BidDetails } from "@reservoir0x/sdk/dist/router/v6/types";
+import { BidDetails, FillBidsResult } from "@reservoir0x/sdk/dist/router/v6/types";
 import Joi from "joi";
 
 import { inject } from "@/api/index";
@@ -14,7 +14,7 @@ import { bn, formatPrice, fromBuffer, now, regex, toBuffer } from "@/common/util
 import { config } from "@/config/index";
 import { getNetworkSettings } from "@/config/network";
 import { Sources } from "@/models/sources";
-import { OrderKind, generateBidDetailsV6 } from "@/orderbook/orders";
+import { OrderKind, generateBidDetailsV6, routerOnRecoverableError } from "@/orderbook/orders";
 import * as commonHelpers from "@/orderbook/orders/common/helpers";
 import * as nftx from "@/orderbook/orders/nftx";
 import * as sudoswap from "@/orderbook/orders/sudoswap";
@@ -26,7 +26,7 @@ const version = "v7";
 
 export const getExecuteSellV7Options: RouteOptions = {
   description: "Sell tokens (accept bids)",
-  tags: ["api", "x-experimental"],
+  tags: ["api", "Router"],
   timeout: {
     server: 20 * 1000,
   },
@@ -120,6 +120,12 @@ export const getExecuteSellV7Options: RouteOptions = {
               })
             )
             .required(),
+        })
+      ),
+      errors: Joi.array().items(
+        Joi.object({
+          message: Joi.string(),
+          orderId: Joi.number(),
         })
       ),
       path: Joi.array().items(
@@ -255,6 +261,10 @@ export const getExecuteSellV7Options: RouteOptions = {
               unitPrice: order.price,
               rawData: order.rawData,
               fees: feesOnTop,
+              isProtected:
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (order.rawData as any).zone ===
+                Sdk.SeaportV14.Addresses.OpenSeaProtectedOffersZone[config.chainId],
             },
             {
               kind: token.kind,
@@ -505,6 +515,7 @@ export const getExecuteSellV7Options: RouteOptions = {
                   WHERE nft_balances.contract = $/contract/
                     AND nft_balances.token_id = $/tokenId/
                     AND nft_balances.amount >= $/quantity/
+                  LIMIT 1
                 `,
                 {
                   contract: toBuffer(contract),
@@ -605,36 +616,12 @@ export const getExecuteSellV7Options: RouteOptions = {
         throw Boom.badRequest("No available orders");
       }
 
-      const router = new Sdk.RouterV6.Router(config.chainId, baseProvider, {
-        x2y2ApiKey: payload.x2y2ApiKey ?? config.x2y2ApiKey,
-        cbApiKey: config.cbApiKey,
-      });
-
-      const { customTokenAddresses } = getNetworkSettings();
-      const forcePermit = customTokenAddresses.includes(bidDetails[0].contract);
-      const { txData, success, approvals, permits } = await router.fillBidsTx(
-        bidDetails,
-        payload.taker,
-        {
-          source: payload.source,
-          partial: payload.partial,
-          forcePermit,
-        }
-      );
-
-      // Filter out any non-fillable orders from the path
-      path = path.filter((_, i) => success[i]);
-
-      if (!path.length) {
-        throw Boom.badRequest("No available orders");
-      }
-
       if (payload.onlyPath) {
         return { path };
       }
 
       // Set up generic filling steps
-      const steps: {
+      let steps: {
         id: string;
         action: string;
         description: string;
@@ -667,6 +654,81 @@ export const getExecuteSellV7Options: RouteOptions = {
           items: [],
         },
       ];
+
+      const protectedOffers = bidDetails.filter((d) => d.isProtected);
+      if (protectedOffers.length > 1) {
+        throw Boom.badRequest("Only a single protected offer can be accepted at once");
+      }
+      if (protectedOffers.length === 1 && bidDetails.length > 1) {
+        throw Boom.badRequest("Protected offers cannot be accepted with other offers");
+      }
+
+      if (protectedOffers.length === 1) {
+        // Ensure the taker owns the NFTs to get sold
+        const takerIsOwner = await idb.oneOrNone(
+          `
+            SELECT
+              1
+            FROM nft_balances
+            WHERE nft_balances.contract = $/contract/
+              AND nft_balances.token_id = $/tokenId/
+              AND nft_balances.amount >= $/quantity/
+              AND nft_balances.owner = $/owner/
+            LIMIT 1
+          `,
+          {
+            contract: toBuffer(bidDetails[0].contract),
+            tokenId: bidDetails[0].tokenId,
+            quantity: bidDetails[0].amount ?? 1,
+            owner: toBuffer(payload.taker),
+          }
+        );
+        if (!takerIsOwner) {
+          throw Boom.badRequest("Taker is not the owner of the token to sell");
+        }
+      }
+
+      const router = new Sdk.RouterV6.Router(config.chainId, baseProvider, {
+        x2y2ApiKey: payload.x2y2ApiKey ?? config.x2y2ApiKey,
+        cbApiKey: config.cbApiKey,
+        orderFetcherBaseUrl: config.orderFetcherBaseUrl,
+        orderFetcherApiKey: config.orderFetcherApiKey,
+      });
+
+      const { customTokenAddresses } = getNetworkSettings();
+      const forcePermit = customTokenAddresses.includes(bidDetails[0].contract);
+
+      const errors: { orderId: string; message: string }[] = [];
+
+      let result: FillBidsResult;
+      try {
+        result = await router.fillBidsTx(bidDetails, payload.taker, {
+          source: payload.source,
+          partial: payload.partial,
+          forcePermit,
+          onRecoverableError: async (kind, error, data) => {
+            errors.push({
+              orderId: data.orderId,
+              message: error.response?.data ?? error.message,
+            });
+            await routerOnRecoverableError(kind, error, data);
+          },
+        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        const boomError = Boom.badRequest(error.message);
+        boomError.output.payload.errors = errors;
+        throw boomError;
+      }
+
+      const { txData, approvals, permits, success } = result;
+
+      // Filter out any non-fillable orders from the path
+      path = path.filter((_, i) => success[i]);
+
+      if (!path.length) {
+        throw Boom.badRequest("No available orders");
+      }
 
       // Custom gas settings
       const maxFeePerGas = payload.maxFeePerGas
@@ -753,8 +815,19 @@ export const getExecuteSellV7Options: RouteOptions = {
             : undefined,
       });
 
+      // Warning! When filtering the steps, we should ensure that it
+      // won't affect the client, which might be polling the API and
+      // expect to get the steps returned in the same order / at the
+      // same index.
+      if (!approvals.length && !permits.length) {
+        // If no approvals/permits are returned from the router then
+        // those are not actually needed and we can cut their steps
+        steps = steps.slice(2);
+      }
+
       return {
         steps,
+        errors,
         path,
       };
     } catch (error) {
