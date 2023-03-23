@@ -5,6 +5,18 @@
 
 * generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
 
+
+### Features
+
+* update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
+
+# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-23)
+
+
+### Bug Fixes
+
+* generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
+
 # [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-23)
 
 
