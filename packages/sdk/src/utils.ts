@@ -102,7 +102,7 @@ export enum Network {
   Polygon = 137,
   PolygonMumbai = 80001,
   // Arbitrum
-  Arbitrum = 42161,
+  Arbitrum = 421613,
   // Avalanche
   Avalanche = 43114,
   AvalancheFuji = 43113,

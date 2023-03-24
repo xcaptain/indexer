@@ -11,13 +11,13 @@ services:
     ports:
       - 5432:5432
 
-  redis:
-    image: redis:6.2.2
-    command: sh -c "redis-server --requirepass password"
-    networks:
-      - local
-    ports:
-      - 6379:6379
+  # redis:
+  #   image: redis:6.2.2
+  #   command: sh -c "redis-server --requirepass password"
+  #   networks:
+  #     - local
+  #   ports:
+  #     - 6379:6379
 
 networks:
   local:

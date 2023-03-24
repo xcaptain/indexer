@@ -1,27 +1,27 @@
 import { ChainIdToAddress, Network } from "../utils";
 
 export const Exchange: ChainIdToAddress = {
-  [Network.Ethereum]: "0x7374fe94e34c209616cec0610212de13151d222f",
-  [Network.EthereumGoerli]: "0x7374fe94e34c209616cec0610212de13151d222f",
-  [Network.Optimism]: "0x7374fe94e34c209616cec0610212de13151d222f",
-  [Network.Gnosis]: "0x7374fe94e34c209616cec0610212de13151d222f",
-  [Network.Polygon]: "0x7374fe94e34c209616cec0610212de13151d222f",
-  [Network.PolygonMumbai]: "0x7374fe94e34c209616cec0610212de13151d222f",
-  [Network.Arbitrum]: "0x7374fe94e34c209616cec0610212de13151d222f",
-  [Network.AvalancheFuji]: "0x7374fe94e34c209616cec0610212de13151d222f",
-  [Network.Avalanche]: "0x7374fe94e34c209616cec0610212de13151d222f",
+  [Network.Ethereum]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.EthereumGoerli]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.Optimism]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.Gnosis]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.Polygon]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.PolygonMumbai]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.Arbitrum]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.AvalancheFuji]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.Avalanche]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
 };
 
 export const ConduitController: ChainIdToAddress = {
-  [Network.Ethereum]: "0xc04dd964ed36c0e4796f53a7168393ed4fc38ff6",
-  [Network.EthereumGoerli]: "0xc04dd964ed36c0e4796f53a7168393ed4fc38ff6",
-  [Network.Optimism]: "0xc04dd964ed36c0e4796f53a7168393ed4fc38ff6",
-  [Network.Gnosis]: "0xc04dd964ed36c0e4796f53a7168393ed4fc38ff6",
-  [Network.Polygon]: "0xc04dd964ed36c0e4796f53a7168393ed4fc38ff6",
-  [Network.PolygonMumbai]: "0xc04dd964ed36c0e4796f53a7168393ed4fc38ff6",
-  [Network.Arbitrum]: "0xc04dd964ed36c0e4796f53a7168393ed4fc38ff6",
-  [Network.AvalancheFuji]: "0xc04dd964ed36c0e4796f53a7168393ed4fc38ff6",
-  [Network.Avalanche]: "0xc04dd964ed36c0e4796f53a7168393ed4fc38ff6",
+  [Network.Ethereum]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.EthereumGoerli]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.Optimism]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.Gnosis]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.Polygon]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.PolygonMumbai]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.Arbitrum]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.AvalancheFuji]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
+  [Network.Avalanche]: "0x9c390EFB05e09982E23993EBFA3b32c190e25f4B",
 };
 
 // Conduits
@@ -34,10 +34,10 @@ export const OpenseaConduitKey: ChainIdToAddress = {
 };
 
 export const OpenseaConduit: ChainIdToAddress = {
-  [Network.Ethereum]: "0x6e2809e67faae9d3127f87e669b5f5deb46ff0a3",
-  [Network.EthereumGoerli]: "0x6e2809e67faae9d3127f87e669b5f5deb46ff0a3",
-  [Network.Polygon]: "0x6e2809e67faae9d3127f87e669b5f5deb46ff0a3",
-  [Network.Optimism]: "0x6e2809e67faae9d3127f87e669b5f5deb46ff0a3",
+  [Network.Ethereum]: "0x9377b61ba41d889fd7cd3f24d1627e42f93a5d0611646a9a76f055f7973c7434",
+  [Network.EthereumGoerli]: "0x9377b61ba41d889fd7cd3f24d1627e42f93a5d0611646a9a76f055f7973c7434",
+  [Network.Polygon]: "0x9377b61ba41d889fd7cd3f24d1627e42f93a5d0611646a9a76f055f7973c7434",
+  [Network.Optimism]: "0x9377b61ba41d889fd7cd3f24d1627e42f93a5d0611646a9a76f055f7973c7434",
 };
 
 // Zones

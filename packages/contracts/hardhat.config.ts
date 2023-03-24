@@ -29,7 +29,7 @@ const getNetworkConfig = (chainId?: number) => {
       case 137:
         url = `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
         break;
-      case 42161:
+      case 421613:
         url = `https://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
         break;
       default:
@@ -83,7 +83,7 @@ const config: HardhatUserConfig = {
     mainnet: getNetworkConfig(1),
     optimism: getNetworkConfig(10),
     polygon: getNetworkConfig(137),
-    arbitrum: getNetworkConfig(42161),
+    arbitrum: getNetworkConfig(421613),
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,

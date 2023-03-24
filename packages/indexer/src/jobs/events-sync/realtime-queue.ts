@@ -32,7 +32,7 @@ new QueueScheduler(QUEUE_NAME, { connection: redis.duplicate() });
 // BACKGROUND WORKER ONLY
 if (
   config.doBackgroundWork &&
-  (_.includes([137, 42161, 10], config.chainId) ? config.doProcessRealtime : true)
+  (_.includes([137, 421613, 10], config.chainId) ? config.doProcessRealtime : true)
 ) {
   const worker = new Worker(
     QUEUE_NAME,
@@ -106,7 +106,7 @@ if (
 
   // Monitor the job as bullmq has bugs and job might be stuck and needs to be manually removed
   cron.schedule(`*/${getNetworkSettings().realtimeSyncFrequencySeconds} * * * * *`, async () => {
-    if (_.includes([137, 42161, 10], config.chainId)) {
+    if (_.includes([137, 421613, 10], config.chainId)) {
       const job = await queue.getJob(`${config.chainId}`);
 
       if (job && (await job.isFailed())) {
@@ -122,7 +122,7 @@ if (
 
 export const addToQueue = async () => {
   let jobId;
-  if (_.includes([137, 42161, 10], config.chainId)) {
+  if (_.includes([137, 421613, 10], config.chainId)) {
     jobId = `${config.chainId}`;
   }
 

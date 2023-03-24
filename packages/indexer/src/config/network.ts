@@ -24,7 +24,7 @@ export const getNetworkName = () => {
     case 137:
       return "polygon";
 
-    case 42161:
+    case 421613:
       return "arbitrum";
 
     default:
@@ -43,7 +43,7 @@ export const getOpenseaNetworkName = () => {
     case 137:
       return "matic";
 
-    case 42161:
+    case 421613:
       return "arbitrum";
 
     default:
@@ -406,7 +406,7 @@ export const getNetworkSettings = (): NetworkSettings => {
       };
     }
     // Arbitrum
-    case 42161: {
+    case 421613: {
       return {
         ...defaultNetworkSettings,
         enableWebSocket: false,
