@@ -1,115 +1,245 @@
-# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-23)
-
+# [6.0.0-dev.20](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.19...v6.0.0-dev.20) (2023-03-24)
 
 ### Bug Fixes
 
-* generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
-
+- diabled trait offers ([#3759](https://github.com/reservoirprotocol/indexer/issues/3759)) ([d95b747](https://github.com/reservoirprotocol/indexer/commit/d95b747ce40c8f79257657ae0ac334970fa8527d))
+- fix typo and inequality ([a03f026](https://github.com/reservoirprotocol/indexer/commit/a03f02693e27a5910ca66d2efbf443687bf377e2))
+- only replace off-chain cancellable orders ([b2b1d2e](https://github.com/reservoirprotocol/indexer/commit/b2b1d2ee4210e3e42187e64c09dc0ad477f9ddd3))
+- order-fetcher api call ([6112118](https://github.com/reservoirprotocol/indexer/commit/6112118ddda1a80c7bdeb2d70526e3193b9fe2e3))
+- pr feedback ([2b24429](https://github.com/reservoirprotocol/indexer/commit/2b2442986da342a53a34000257bb45bb17029c3c))
+- semantic parallel runs ([e81dc21](https://github.com/reservoirprotocol/indexer/commit/e81dc210bd0a22625a72d2d02b14437691ac1dd1))
+- semantic parallel runs ([b5b5c0f](https://github.com/reservoirprotocol/indexer/commit/b5b5c0f3e2154b9d775a4e8c24c80f3b0e459b6b))
+- semantic release parallel runs ([1f69238](https://github.com/reservoirprotocol/indexer/commit/1f69238b9f0d4a61bb6ec4b6df88fb9ea162e397))
+- semantic release parallel runs ([288000e](https://github.com/reservoirprotocol/indexer/commit/288000edf54661c16f174dd2db8bde65a45865d8))
+- slowness ([2ceac5a](https://github.com/reservoirprotocol/indexer/commit/2ceac5a700df14b9b6fad42a7d84773a196bcb04))
+- trigger pipeline ([951da06](https://github.com/reservoirprotocol/indexer/commit/951da064edd27dad8b533a86068aa5c08635edd9))
+- trigger pipeline ([a0b8b93](https://github.com/reservoirprotocol/indexer/commit/a0b8b93f84b3c165dd143ea71a2948cbcc80ddf8))
+- typo ([f4a899d](https://github.com/reservoirprotocol/indexer/commit/f4a899d2ef5cdc585ea9359cd46a6640e355d2b4))
 
 ### Features
 
-* update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
+- add support for cross-posting listings to blur ([6e59671](https://github.com/reservoirprotocol/indexer/commit/6e59671db3ddefce68c82dffc3dbd79c368c1438))
+- add sync sales api ([d13e6c0](https://github.com/reservoirprotocol/indexer/commit/d13e6c0a4d4981c349e85e4fb8c2906986c51a50))
+- change metrics api to be an admin and add clearing tables cron ([0f5bca0](https://github.com/reservoirprotocol/indexer/commit/0f5bca0242c762772ae1d606e328dfbe4bd87464))
+- fix day7,day30 daily volume calculation to happen on that day ([4357da6](https://github.com/reservoirprotocol/indexer/commit/4357da646ef165525332ccd253156cdccb60f945))
+- royalties support more cases ([06cf5e0](https://github.com/reservoirprotocol/indexer/commit/06cf5e0313c885757cbb27a1104d9eb67408ce47))
+- trigger deployment ([#3764](https://github.com/reservoirprotocol/indexer/issues/3764)) ([3b31521](https://github.com/reservoirprotocol/indexer/commit/3b31521363d93f31504e1f5f457b38a5dea541c3))
+- update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
 
-# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-23)
+### Performance Improvements
 
+- only simulate/revalidate top bid on token refresh ([5468407](https://github.com/reservoirprotocol/indexer/commit/5468407a81075240685032b56af5f3a0888bcd71))
+
+# [6.0.0-dev.20](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.19...v6.0.0-dev.20) (2023-03-24)
 
 ### Bug Fixes
 
-* generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
+- only replace off-chain cancellable orders ([b2b1d2e](https://github.com/reservoirprotocol/indexer/commit/b2b1d2ee4210e3e42187e64c09dc0ad477f9ddd3))
+- order-fetcher api call ([6112118](https://github.com/reservoirprotocol/indexer/commit/6112118ddda1a80c7bdeb2d70526e3193b9fe2e3))
+- pr feedback ([2b24429](https://github.com/reservoirprotocol/indexer/commit/2b2442986da342a53a34000257bb45bb17029c3c))
+- semantic parallel runs ([b5b5c0f](https://github.com/reservoirprotocol/indexer/commit/b5b5c0f3e2154b9d775a4e8c24c80f3b0e459b6b))
+- semantic release parallel runs ([288000e](https://github.com/reservoirprotocol/indexer/commit/288000edf54661c16f174dd2db8bde65a45865d8))
+- slowness ([2ceac5a](https://github.com/reservoirprotocol/indexer/commit/2ceac5a700df14b9b6fad42a7d84773a196bcb04))
+- trigger pipeline ([a0b8b93](https://github.com/reservoirprotocol/indexer/commit/a0b8b93f84b3c165dd143ea71a2948cbcc80ddf8))
 
-# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-23)
+### Features
 
+- add support for cross-posting listings to blur ([6e59671](https://github.com/reservoirprotocol/indexer/commit/6e59671db3ddefce68c82dffc3dbd79c368c1438))
+- add sync sales api ([d13e6c0](https://github.com/reservoirprotocol/indexer/commit/d13e6c0a4d4981c349e85e4fb8c2906986c51a50))
+- update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
+
+### Performance Improvements
+
+- only simulate/revalidate top bid on token refresh ([5468407](https://github.com/reservoirprotocol/indexer/commit/5468407a81075240685032b56af5f3a0888bcd71))
+
+# [6.0.0-dev.20](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.19...v6.0.0-dev.20) (2023-03-24)
 
 ### Bug Fixes
 
-* generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
+- only replace off-chain cancellable orders ([b2b1d2e](https://github.com/reservoirprotocol/indexer/commit/b2b1d2ee4210e3e42187e64c09dc0ad477f9ddd3))
+- order-fetcher api call ([6112118](https://github.com/reservoirprotocol/indexer/commit/6112118ddda1a80c7bdeb2d70526e3193b9fe2e3))
+- pr feedback ([2b24429](https://github.com/reservoirprotocol/indexer/commit/2b2442986da342a53a34000257bb45bb17029c3c))
+- semantic parallel runs ([b5b5c0f](https://github.com/reservoirprotocol/indexer/commit/b5b5c0f3e2154b9d775a4e8c24c80f3b0e459b6b))
+- semantic release parallel runs ([288000e](https://github.com/reservoirprotocol/indexer/commit/288000edf54661c16f174dd2db8bde65a45865d8))
+- slowness ([2ceac5a](https://github.com/reservoirprotocol/indexer/commit/2ceac5a700df14b9b6fad42a7d84773a196bcb04))
+
+### Features
+
+- add support for cross-posting listings to blur ([6e59671](https://github.com/reservoirprotocol/indexer/commit/6e59671db3ddefce68c82dffc3dbd79c368c1438))
+- add sync sales api ([d13e6c0](https://github.com/reservoirprotocol/indexer/commit/d13e6c0a4d4981c349e85e4fb8c2906986c51a50))
+- update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
+
+### Performance Improvements
+
+- only simulate/revalidate top bid on token refresh ([5468407](https://github.com/reservoirprotocol/indexer/commit/5468407a81075240685032b56af5f3a0888bcd71))
+
+# [6.0.0-dev.20](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.19...v6.0.0-dev.20) (2023-03-24)
+
+### Bug Fixes
+
+- only replace off-chain cancellable orders ([b2b1d2e](https://github.com/reservoirprotocol/indexer/commit/b2b1d2ee4210e3e42187e64c09dc0ad477f9ddd3))
+- order-fetcher api call ([6112118](https://github.com/reservoirprotocol/indexer/commit/6112118ddda1a80c7bdeb2d70526e3193b9fe2e3))
+- pr feedback ([2b24429](https://github.com/reservoirprotocol/indexer/commit/2b2442986da342a53a34000257bb45bb17029c3c))
+- semantic parallel runs ([b5b5c0f](https://github.com/reservoirprotocol/indexer/commit/b5b5c0f3e2154b9d775a4e8c24c80f3b0e459b6b))
+- slowness ([2ceac5a](https://github.com/reservoirprotocol/indexer/commit/2ceac5a700df14b9b6fad42a7d84773a196bcb04))
+
+### Features
+
+- add support for cross-posting listings to blur ([6e59671](https://github.com/reservoirprotocol/indexer/commit/6e59671db3ddefce68c82dffc3dbd79c368c1438))
+- add sync sales api ([d13e6c0](https://github.com/reservoirprotocol/indexer/commit/d13e6c0a4d4981c349e85e4fb8c2906986c51a50))
+- update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
+
+### Performance Improvements
+
+- only simulate/revalidate top bid on token refresh ([5468407](https://github.com/reservoirprotocol/indexer/commit/5468407a81075240685032b56af5f3a0888bcd71))
+
+# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-24)
+
+### Bug Fixes
+
+- generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
+- only replace off-chain cancellable orders ([b2b1d2e](https://github.com/reservoirprotocol/indexer/commit/b2b1d2ee4210e3e42187e64c09dc0ad477f9ddd3))
+- order-fetcher api call ([6112118](https://github.com/reservoirprotocol/indexer/commit/6112118ddda1a80c7bdeb2d70526e3193b9fe2e3))
+- pr feedback ([2b24429](https://github.com/reservoirprotocol/indexer/commit/2b2442986da342a53a34000257bb45bb17029c3c))
+- slowness ([2ceac5a](https://github.com/reservoirprotocol/indexer/commit/2ceac5a700df14b9b6fad42a7d84773a196bcb04))
+
+### Features
+
+- add support for cross-posting listings to blur ([6e59671](https://github.com/reservoirprotocol/indexer/commit/6e59671db3ddefce68c82dffc3dbd79c368c1438))
+- add sync sales api ([d13e6c0](https://github.com/reservoirprotocol/indexer/commit/d13e6c0a4d4981c349e85e4fb8c2906986c51a50))
+- update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
+
+### Performance Improvements
+
+- only simulate/revalidate top bid on token refresh ([5468407](https://github.com/reservoirprotocol/indexer/commit/5468407a81075240685032b56af5f3a0888bcd71))
+
+# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-24)
+
+### Bug Fixes
+
+- generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
+- order-fetcher api call ([6112118](https://github.com/reservoirprotocol/indexer/commit/6112118ddda1a80c7bdeb2d70526e3193b9fe2e3))
+- pr feedback ([2b24429](https://github.com/reservoirprotocol/indexer/commit/2b2442986da342a53a34000257bb45bb17029c3c))
+
+### Features
+
+- add support for cross-posting listings to blur ([6e59671](https://github.com/reservoirprotocol/indexer/commit/6e59671db3ddefce68c82dffc3dbd79c368c1438))
+- add sync sales api ([d13e6c0](https://github.com/reservoirprotocol/indexer/commit/d13e6c0a4d4981c349e85e4fb8c2906986c51a50))
+- update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
+
+# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-23)
+
+### Bug Fixes
+
+- generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
+- pr feedback ([2b24429](https://github.com/reservoirprotocol/indexer/commit/2b2442986da342a53a34000257bb45bb17029c3c))
+
+### Features
+
+- add sync sales api ([d13e6c0](https://github.com/reservoirprotocol/indexer/commit/d13e6c0a4d4981c349e85e4fb8c2906986c51a50))
+- update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
+
+# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-23)
+
+### Bug Fixes
+
+- generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
+
+### Features
+
+- update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
+
+# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-23)
+
+### Bug Fixes
+
+- generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
+
+# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-23)
+
+### Bug Fixes
+
+- generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
 
 # [6.0.0-dev.18](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.17...v6.0.0-dev.18) (2023-03-23)
 
-
 ### Bug Fixes
 
-* trigger pipeline ([ad9ae17](https://github.com/reservoirprotocol/indexer/commit/ad9ae171b3ed1ff4ed5dc4cef5ffc81eb571f009))
+- trigger pipeline ([ad9ae17](https://github.com/reservoirprotocol/indexer/commit/ad9ae171b3ed1ff4ed5dc4cef5ffc81eb571f009))
 
 # [6.0.0-dev.15](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.14...v6.0.0-dev.15) (2023-03-23)
 
-
 ### Bug Fixes
 
-* dont return collections with 0 tokens ([bdd425f](https://github.com/reservoirprotocol/indexer/commit/bdd425fa30513ba09a8e9cadc0d16f721d4c205b))
-* fix timestamp being in long-form ([0a4b8bf](https://github.com/reservoirprotocol/indexer/commit/0a4b8bf5a1d017dfc5ea38a5fa8bd0cc4de960f7))
-* leave includeRoyaltiesPaid undefined if token has no last order ([9dcbd2b](https://github.com/reservoirprotocol/indexer/commit/9dcbd2b76515658ac1b325dfc6807f3e10438e2b))
-* more fixes ([8c28c1e](https://github.com/reservoirprotocol/indexer/commit/8c28c1eb8ac0da8f1107b4b6b94355ea6035bfd7))
-* recalc token_count only for old collection as it is already done for new collection ([c231d08](https://github.com/reservoirprotocol/indexer/commit/c231d0811ef0104e8d9fc7118b63e269960b8ba5))
-* remove package-lock.json ([6144236](https://github.com/reservoirprotocol/indexer/commit/61442369271bd83567fb186c5ea7110e39171202))
-* rename redis channel new-top-bid -> top-bids ([1adfde0](https://github.com/reservoirprotocol/indexer/commit/1adfde0b53e4cd98225fda7aee4c06bf60a1c463))
-* tweak simulations and invalidations ([a433220](https://github.com/reservoirprotocol/indexer/commit/a43322098a48dc2b52226eef5e2645315dab931b))
-* update collections.token_count after token is assigned new collectionId ([9d664b5](https://github.com/reservoirprotocol/indexer/commit/9d664b5f5d66c65f457717cef0f04b105d22c931))
-
+- dont return collections with 0 tokens ([bdd425f](https://github.com/reservoirprotocol/indexer/commit/bdd425fa30513ba09a8e9cadc0d16f721d4c205b))
+- fix timestamp being in long-form ([0a4b8bf](https://github.com/reservoirprotocol/indexer/commit/0a4b8bf5a1d017dfc5ea38a5fa8bd0cc4de960f7))
+- leave includeRoyaltiesPaid undefined if token has no last order ([9dcbd2b](https://github.com/reservoirprotocol/indexer/commit/9dcbd2b76515658ac1b325dfc6807f3e10438e2b))
+- more fixes ([8c28c1e](https://github.com/reservoirprotocol/indexer/commit/8c28c1eb8ac0da8f1107b4b6b94355ea6035bfd7))
+- recalc token_count only for old collection as it is already done for new collection ([c231d08](https://github.com/reservoirprotocol/indexer/commit/c231d0811ef0104e8d9fc7118b63e269960b8ba5))
+- remove package-lock.json ([6144236](https://github.com/reservoirprotocol/indexer/commit/61442369271bd83567fb186c5ea7110e39171202))
+- rename redis channel new-top-bid -> top-bids ([1adfde0](https://github.com/reservoirprotocol/indexer/commit/1adfde0b53e4cd98225fda7aee4c06bf60a1c463))
+- tweak simulations and invalidations ([a433220](https://github.com/reservoirprotocol/indexer/commit/a43322098a48dc2b52226eef5e2645315dab931b))
+- update collections.token_count after token is assigned new collectionId ([9d664b5](https://github.com/reservoirprotocol/indexer/commit/9d664b5f5d66c65f457717cef0f04b105d22c931))
 
 ### Features
 
-* add redis pub into websocket event ([25ac16b](https://github.com/reservoirprotocol/indexer/commit/25ac16b19a96cc68ddee8f46cb2b834f516c4f30))
-* add support for filtering out EOA-only listings ([d9c38e5](https://github.com/reservoirprotocol/indexer/commit/d9c38e5fae9b07a1fc8282c9bb3b64e3abe184d1))
-* added collections supported marketplaces api ([#3733](https://github.com/reservoirprotocol/indexer/issues/3733)) ([87b193d](https://github.com/reservoirprotocol/indexer/commit/87b193def26935b4cb944e518c948530125cd250))
-* always log x-api-key ([7114be4](https://github.com/reservoirprotocol/indexer/commit/7114be4ac7744c3c575a49fd08becd0ee0c2fae7))
-* decrease sample size from 10k -> 5k for performance ([0db6a9c](https://github.com/reservoirprotocol/indexer/commit/0db6a9c66d2bf05589c3e396e55d539e9ba0d71e))
-* fix top bid on token refresh ([fa35679](https://github.com/reservoirprotocol/indexer/commit/fa356797bd41a34e955ca102b8e91662306bae84))
-* remove floor changes from this branch ([23899cc](https://github.com/reservoirprotocol/indexer/commit/23899cc370226a05ee75184dff45850c89d2d389))
-* trigger an order fix whenever simulation failed ([cc231ad](https://github.com/reservoirprotocol/indexer/commit/cc231ad0a5aca1a3e4d2257af579bd386d5ab503))
-* update filed name ([5f55a32](https://github.com/reservoirprotocol/indexer/commit/5f55a322105f4b8c076359cc5dc377a1bdd6d178))
+- add redis pub into websocket event ([25ac16b](https://github.com/reservoirprotocol/indexer/commit/25ac16b19a96cc68ddee8f46cb2b834f516c4f30))
+- add support for filtering out EOA-only listings ([d9c38e5](https://github.com/reservoirprotocol/indexer/commit/d9c38e5fae9b07a1fc8282c9bb3b64e3abe184d1))
+- added collections supported marketplaces api ([#3733](https://github.com/reservoirprotocol/indexer/issues/3733)) ([87b193d](https://github.com/reservoirprotocol/indexer/commit/87b193def26935b4cb944e518c948530125cd250))
+- always log x-api-key ([7114be4](https://github.com/reservoirprotocol/indexer/commit/7114be4ac7744c3c575a49fd08becd0ee0c2fae7))
+- decrease sample size from 10k -> 5k for performance ([0db6a9c](https://github.com/reservoirprotocol/indexer/commit/0db6a9c66d2bf05589c3e396e55d539e9ba0d71e))
+- fix top bid on token refresh ([fa35679](https://github.com/reservoirprotocol/indexer/commit/fa356797bd41a34e955ca102b8e91662306bae84))
+- remove floor changes from this branch ([23899cc](https://github.com/reservoirprotocol/indexer/commit/23899cc370226a05ee75184dff45850c89d2d389))
+- trigger an order fix whenever simulation failed ([cc231ad](https://github.com/reservoirprotocol/indexer/commit/cc231ad0a5aca1a3e4d2257af579bd386d5ab503))
+- update filed name ([5f55a32](https://github.com/reservoirprotocol/indexer/commit/5f55a322105f4b8c076359cc5dc377a1bdd6d178))
 
 # [6.0.0-dev.15](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.14...v6.0.0-dev.15) (2023-03-23)
 
-
 ### Bug Fixes
 
-* dont return collections with 0 tokens ([bdd425f](https://github.com/reservoirprotocol/indexer/commit/bdd425fa30513ba09a8e9cadc0d16f721d4c205b))
-* fix timestamp being in long-form ([0a4b8bf](https://github.com/reservoirprotocol/indexer/commit/0a4b8bf5a1d017dfc5ea38a5fa8bd0cc4de960f7))
-* leave includeRoyaltiesPaid undefined if token has no last order ([9dcbd2b](https://github.com/reservoirprotocol/indexer/commit/9dcbd2b76515658ac1b325dfc6807f3e10438e2b))
-* more fixes ([8c28c1e](https://github.com/reservoirprotocol/indexer/commit/8c28c1eb8ac0da8f1107b4b6b94355ea6035bfd7))
-* recalc token_count only for old collection as it is already done for new collection ([c231d08](https://github.com/reservoirprotocol/indexer/commit/c231d0811ef0104e8d9fc7118b63e269960b8ba5))
-* remove package-lock.json ([6144236](https://github.com/reservoirprotocol/indexer/commit/61442369271bd83567fb186c5ea7110e39171202))
-* rename redis channel new-top-bid -> top-bids ([1adfde0](https://github.com/reservoirprotocol/indexer/commit/1adfde0b53e4cd98225fda7aee4c06bf60a1c463))
-* update collections.token_count after token is assigned new collectionId ([9d664b5](https://github.com/reservoirprotocol/indexer/commit/9d664b5f5d66c65f457717cef0f04b105d22c931))
-
+- dont return collections with 0 tokens ([bdd425f](https://github.com/reservoirprotocol/indexer/commit/bdd425fa30513ba09a8e9cadc0d16f721d4c205b))
+- fix timestamp being in long-form ([0a4b8bf](https://github.com/reservoirprotocol/indexer/commit/0a4b8bf5a1d017dfc5ea38a5fa8bd0cc4de960f7))
+- leave includeRoyaltiesPaid undefined if token has no last order ([9dcbd2b](https://github.com/reservoirprotocol/indexer/commit/9dcbd2b76515658ac1b325dfc6807f3e10438e2b))
+- more fixes ([8c28c1e](https://github.com/reservoirprotocol/indexer/commit/8c28c1eb8ac0da8f1107b4b6b94355ea6035bfd7))
+- recalc token_count only for old collection as it is already done for new collection ([c231d08](https://github.com/reservoirprotocol/indexer/commit/c231d0811ef0104e8d9fc7118b63e269960b8ba5))
+- remove package-lock.json ([6144236](https://github.com/reservoirprotocol/indexer/commit/61442369271bd83567fb186c5ea7110e39171202))
+- rename redis channel new-top-bid -> top-bids ([1adfde0](https://github.com/reservoirprotocol/indexer/commit/1adfde0b53e4cd98225fda7aee4c06bf60a1c463))
+- update collections.token_count after token is assigned new collectionId ([9d664b5](https://github.com/reservoirprotocol/indexer/commit/9d664b5f5d66c65f457717cef0f04b105d22c931))
 
 ### Features
 
-* add redis pub into websocket event ([25ac16b](https://github.com/reservoirprotocol/indexer/commit/25ac16b19a96cc68ddee8f46cb2b834f516c4f30))
-* add support for filtering out EOA-only listings ([d9c38e5](https://github.com/reservoirprotocol/indexer/commit/d9c38e5fae9b07a1fc8282c9bb3b64e3abe184d1))
-* added collections supported marketplaces api ([#3733](https://github.com/reservoirprotocol/indexer/issues/3733)) ([87b193d](https://github.com/reservoirprotocol/indexer/commit/87b193def26935b4cb944e518c948530125cd250))
-* always log x-api-key ([7114be4](https://github.com/reservoirprotocol/indexer/commit/7114be4ac7744c3c575a49fd08becd0ee0c2fae7))
-* decrease sample size from 10k -> 5k for performance ([0db6a9c](https://github.com/reservoirprotocol/indexer/commit/0db6a9c66d2bf05589c3e396e55d539e9ba0d71e))
-* fix top bid on token refresh ([fa35679](https://github.com/reservoirprotocol/indexer/commit/fa356797bd41a34e955ca102b8e91662306bae84))
-* remove floor changes from this branch ([23899cc](https://github.com/reservoirprotocol/indexer/commit/23899cc370226a05ee75184dff45850c89d2d389))
-* trigger an order fix whenever simulation failed ([cc231ad](https://github.com/reservoirprotocol/indexer/commit/cc231ad0a5aca1a3e4d2257af579bd386d5ab503))
-* update filed name ([5f55a32](https://github.com/reservoirprotocol/indexer/commit/5f55a322105f4b8c076359cc5dc377a1bdd6d178))
+- add redis pub into websocket event ([25ac16b](https://github.com/reservoirprotocol/indexer/commit/25ac16b19a96cc68ddee8f46cb2b834f516c4f30))
+- add support for filtering out EOA-only listings ([d9c38e5](https://github.com/reservoirprotocol/indexer/commit/d9c38e5fae9b07a1fc8282c9bb3b64e3abe184d1))
+- added collections supported marketplaces api ([#3733](https://github.com/reservoirprotocol/indexer/issues/3733)) ([87b193d](https://github.com/reservoirprotocol/indexer/commit/87b193def26935b4cb944e518c948530125cd250))
+- always log x-api-key ([7114be4](https://github.com/reservoirprotocol/indexer/commit/7114be4ac7744c3c575a49fd08becd0ee0c2fae7))
+- decrease sample size from 10k -> 5k for performance ([0db6a9c](https://github.com/reservoirprotocol/indexer/commit/0db6a9c66d2bf05589c3e396e55d539e9ba0d71e))
+- fix top bid on token refresh ([fa35679](https://github.com/reservoirprotocol/indexer/commit/fa356797bd41a34e955ca102b8e91662306bae84))
+- remove floor changes from this branch ([23899cc](https://github.com/reservoirprotocol/indexer/commit/23899cc370226a05ee75184dff45850c89d2d389))
+- trigger an order fix whenever simulation failed ([cc231ad](https://github.com/reservoirprotocol/indexer/commit/cc231ad0a5aca1a3e4d2257af579bd386d5ab503))
+- update filed name ([5f55a32](https://github.com/reservoirprotocol/indexer/commit/5f55a322105f4b8c076359cc5dc377a1bdd6d178))
 
 # [6.0.0-dev.15](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.14...v6.0.0-dev.15) (2023-03-23)
 
-
 ### Bug Fixes
 
-* dont return collections with 0 tokens ([bdd425f](https://github.com/reservoirprotocol/indexer/commit/bdd425fa30513ba09a8e9cadc0d16f721d4c205b))
-* fix timestamp being in long-form ([0a4b8bf](https://github.com/reservoirprotocol/indexer/commit/0a4b8bf5a1d017dfc5ea38a5fa8bd0cc4de960f7))
-* leave includeRoyaltiesPaid undefined if token has no last order ([9dcbd2b](https://github.com/reservoirprotocol/indexer/commit/9dcbd2b76515658ac1b325dfc6807f3e10438e2b))
-* more fixes ([8c28c1e](https://github.com/reservoirprotocol/indexer/commit/8c28c1eb8ac0da8f1107b4b6b94355ea6035bfd7))
-* recalc token_count only for old collection as it is already done for new collection ([c231d08](https://github.com/reservoirprotocol/indexer/commit/c231d0811ef0104e8d9fc7118b63e269960b8ba5))
-* remove package-lock.json ([6144236](https://github.com/reservoirprotocol/indexer/commit/61442369271bd83567fb186c5ea7110e39171202))
-* rename redis channel new-top-bid -> top-bids ([1adfde0](https://github.com/reservoirprotocol/indexer/commit/1adfde0b53e4cd98225fda7aee4c06bf60a1c463))
-* update collections.token_count after token is assigned new collectionId ([9d664b5](https://github.com/reservoirprotocol/indexer/commit/9d664b5f5d66c65f457717cef0f04b105d22c931))
-
+- dont return collections with 0 tokens ([bdd425f](https://github.com/reservoirprotocol/indexer/commit/bdd425fa30513ba09a8e9cadc0d16f721d4c205b))
+- fix timestamp being in long-form ([0a4b8bf](https://github.com/reservoirprotocol/indexer/commit/0a4b8bf5a1d017dfc5ea38a5fa8bd0cc4de960f7))
+- leave includeRoyaltiesPaid undefined if token has no last order ([9dcbd2b](https://github.com/reservoirprotocol/indexer/commit/9dcbd2b76515658ac1b325dfc6807f3e10438e2b))
+- more fixes ([8c28c1e](https://github.com/reservoirprotocol/indexer/commit/8c28c1eb8ac0da8f1107b4b6b94355ea6035bfd7))
+- recalc token_count only for old collection as it is already done for new collection ([c231d08](https://github.com/reservoirprotocol/indexer/commit/c231d0811ef0104e8d9fc7118b63e269960b8ba5))
+- remove package-lock.json ([6144236](https://github.com/reservoirprotocol/indexer/commit/61442369271bd83567fb186c5ea7110e39171202))
+- rename redis channel new-top-bid -> top-bids ([1adfde0](https://github.com/reservoirprotocol/indexer/commit/1adfde0b53e4cd98225fda7aee4c06bf60a1c463))
+- update collections.token_count after token is assigned new collectionId ([9d664b5](https://github.com/reservoirprotocol/indexer/commit/9d664b5f5d66c65f457717cef0f04b105d22c931))
 
 ### Features
 
-* add redis pub into websocket event ([25ac16b](https://github.com/reservoirprotocol/indexer/commit/25ac16b19a96cc68ddee8f46cb2b834f516c4f30))
-* add support for filtering out EOA-only listings ([d9c38e5](https://github.com/reservoirprotocol/indexer/commit/d9c38e5fae9b07a1fc8282c9bb3b64e3abe184d1))
-* added collections supported marketplaces api ([#3733](https://github.com/reservoirprotocol/indexer/issues/3733)) ([87b193d](https://github.com/reservoirprotocol/indexer/commit/87b193def26935b4cb944e518c948530125cd250))
-* always log x-api-key ([7114be4](https://github.com/reservoirprotocol/indexer/commit/7114be4ac7744c3c575a49fd08becd0ee0c2fae7))
-* decrease sample size from 10k -> 5k for performance ([0db6a9c](https://github.com/reservoirprotocol/indexer/commit/0db6a9c66d2bf05589c3e396e55d539e9ba0d71e))
-* remove floor changes from this branch ([23899cc](https://github.com/reservoirprotocol/indexer/commit/23899cc370226a05ee75184dff45850c89d2d389))
-* update filed name ([5f55a32](https://github.com/reservoirprotocol/indexer/commit/5f55a322105f4b8c076359cc5dc377a1bdd6d178))
+- add redis pub into websocket event ([25ac16b](https://github.com/reservoirprotocol/indexer/commit/25ac16b19a96cc68ddee8f46cb2b834f516c4f30))
+- add support for filtering out EOA-only listings ([d9c38e5](https://github.com/reservoirprotocol/indexer/commit/d9c38e5fae9b07a1fc8282c9bb3b64e3abe184d1))
+- added collections supported marketplaces api ([#3733](https://github.com/reservoirprotocol/indexer/issues/3733)) ([87b193d](https://github.com/reservoirprotocol/indexer/commit/87b193def26935b4cb944e518c948530125cd250))
+- always log x-api-key ([7114be4](https://github.com/reservoirprotocol/indexer/commit/7114be4ac7744c3c575a49fd08becd0ee0c2fae7))
+- decrease sample size from 10k -> 5k for performance ([0db6a9c](https://github.com/reservoirprotocol/indexer/commit/0db6a9c66d2bf05589c3e396e55d539e9ba0d71e))
+- remove floor changes from this branch ([23899cc](https://github.com/reservoirprotocol/indexer/commit/23899cc370226a05ee75184dff45850c89d2d389))
+- update filed name ([5f55a32](https://github.com/reservoirprotocol/indexer/commit/5f55a322105f4b8c076359cc5dc377a1bdd6d178))
 
 # [6.0.0-dev.15](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.14...v6.0.0-dev.15) (2023-03-23)
 
