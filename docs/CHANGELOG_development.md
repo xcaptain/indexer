@@ -1,3 +1,10 @@
+# [6.0.0-dev.24](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.23...v6.0.0-dev.24) (2023-03-24)
+
+
+### Bug Fixes
+
+* support signature fixing for bulk-signed orders ([13ecea7](https://github.com/reservoirprotocol/indexer/commit/13ecea7605bf72bfd1d8f78a1e7d872a3096e862))
+
 # [6.0.0-dev.22](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.21...v6.0.0-dev.22) (2023-03-24)
 
 
