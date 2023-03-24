@@ -1,3 +1,19 @@
+# [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-24)
+
+
+### Bug Fixes
+
+* generic currency description ([f1ee9eb](https://github.com/reservoirprotocol/indexer/commit/f1ee9eb4d4ba7f29a9871f1400261e94e8d241da))
+* order-fetcher api call ([6112118](https://github.com/reservoirprotocol/indexer/commit/6112118ddda1a80c7bdeb2d70526e3193b9fe2e3))
+* pr feedback ([2b24429](https://github.com/reservoirprotocol/indexer/commit/2b2442986da342a53a34000257bb45bb17029c3c))
+
+
+### Features
+
+* add support for cross-posting listings to blur ([6e59671](https://github.com/reservoirprotocol/indexer/commit/6e59671db3ddefce68c82dffc3dbd79c368c1438))
+* add sync sales api ([d13e6c0](https://github.com/reservoirprotocol/indexer/commit/d13e6c0a4d4981c349e85e4fb8c2906986c51a50))
+* update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
+
 # [6.0.0-dev.19](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.18...v6.0.0-dev.19) (2023-03-23)
 
 
