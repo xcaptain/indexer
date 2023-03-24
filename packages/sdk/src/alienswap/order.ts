@@ -385,7 +385,7 @@ export class Order {
 export const EIP712_DOMAIN = (chainId: number) => ({
   name: "Seaport",
   version: "1.4",
-  chainId: 11155111,
+  chainId: 534353,
   verifyingContract: Addresses.Exchange[chainId],
 });
 
