@@ -3,6 +3,41 @@
 
 ### Bug Fixes
 
+* diabled trait offers ([#3759](https://github.com/reservoirprotocol/indexer/issues/3759)) ([d95b747](https://github.com/reservoirprotocol/indexer/commit/d95b747ce40c8f79257657ae0ac334970fa8527d))
+* fix typo and inequality ([a03f026](https://github.com/reservoirprotocol/indexer/commit/a03f02693e27a5910ca66d2efbf443687bf377e2))
+* only replace off-chain cancellable orders ([b2b1d2e](https://github.com/reservoirprotocol/indexer/commit/b2b1d2ee4210e3e42187e64c09dc0ad477f9ddd3))
+* order-fetcher api call ([6112118](https://github.com/reservoirprotocol/indexer/commit/6112118ddda1a80c7bdeb2d70526e3193b9fe2e3))
+* pr feedback ([2b24429](https://github.com/reservoirprotocol/indexer/commit/2b2442986da342a53a34000257bb45bb17029c3c))
+* semantic parallel runs ([e81dc21](https://github.com/reservoirprotocol/indexer/commit/e81dc210bd0a22625a72d2d02b14437691ac1dd1))
+* semantic parallel runs ([b5b5c0f](https://github.com/reservoirprotocol/indexer/commit/b5b5c0f3e2154b9d775a4e8c24c80f3b0e459b6b))
+* semantic release parallel runs ([1f69238](https://github.com/reservoirprotocol/indexer/commit/1f69238b9f0d4a61bb6ec4b6df88fb9ea162e397))
+* semantic release parallel runs ([288000e](https://github.com/reservoirprotocol/indexer/commit/288000edf54661c16f174dd2db8bde65a45865d8))
+* slowness ([2ceac5a](https://github.com/reservoirprotocol/indexer/commit/2ceac5a700df14b9b6fad42a7d84773a196bcb04))
+* trigger pipeline ([951da06](https://github.com/reservoirprotocol/indexer/commit/951da064edd27dad8b533a86068aa5c08635edd9))
+* trigger pipeline ([a0b8b93](https://github.com/reservoirprotocol/indexer/commit/a0b8b93f84b3c165dd143ea71a2948cbcc80ddf8))
+* typo ([f4a899d](https://github.com/reservoirprotocol/indexer/commit/f4a899d2ef5cdc585ea9359cd46a6640e355d2b4))
+
+
+### Features
+
+* add support for cross-posting listings to blur ([6e59671](https://github.com/reservoirprotocol/indexer/commit/6e59671db3ddefce68c82dffc3dbd79c368c1438))
+* add sync sales api ([d13e6c0](https://github.com/reservoirprotocol/indexer/commit/d13e6c0a4d4981c349e85e4fb8c2906986c51a50))
+* change metrics api to be an admin and add clearing tables cron ([0f5bca0](https://github.com/reservoirprotocol/indexer/commit/0f5bca0242c762772ae1d606e328dfbe4bd87464))
+* fix day7,day30 daily volume calculation to happen on that day ([4357da6](https://github.com/reservoirprotocol/indexer/commit/4357da646ef165525332ccd253156cdccb60f945))
+* royalties support more cases ([06cf5e0](https://github.com/reservoirprotocol/indexer/commit/06cf5e0313c885757cbb27a1104d9eb67408ce47))
+* trigger deployment ([#3764](https://github.com/reservoirprotocol/indexer/issues/3764)) ([3b31521](https://github.com/reservoirprotocol/indexer/commit/3b31521363d93f31504e1f5f457b38a5dea541c3))
+* update volume change for daily to compare current 24h to prev 24h ([2659e05](https://github.com/reservoirprotocol/indexer/commit/2659e05e8420f3d225adc15f4ae14cc472a41148))
+
+
+### Performance Improvements
+
+* only simulate/revalidate top bid on token refresh ([5468407](https://github.com/reservoirprotocol/indexer/commit/5468407a81075240685032b56af5f3a0888bcd71))
+
+# [6.0.0-dev.20](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.19...v6.0.0-dev.20) (2023-03-24)
+
+
+### Bug Fixes
+
 * only replace off-chain cancellable orders ([b2b1d2e](https://github.com/reservoirprotocol/indexer/commit/b2b1d2ee4210e3e42187e64c09dc0ad477f9ddd3))
 * order-fetcher api call ([6112118](https://github.com/reservoirprotocol/indexer/commit/6112118ddda1a80c7bdeb2d70526e3193b9fe2e3))
 * pr feedback ([2b24429](https://github.com/reservoirprotocol/indexer/commit/2b2442986da342a53a34000257bb45bb17029c3c))
