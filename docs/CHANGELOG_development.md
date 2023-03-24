@@ -1,3 +1,10 @@
+# [6.0.0-dev.22](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.21...v6.0.0-dev.22) (2023-03-24)
+
+
+### Features
+
+* fix volume change units ([3b0ccdf](https://github.com/reservoirprotocol/indexer/commit/3b0ccdf69755fbacd1fb69b553af1186dde7b0a3))
+
 # [6.0.0-dev.21](https://github.com/reservoirprotocol/indexer/compare/v6.0.0-dev.20...v6.0.0-dev.21) (2023-03-24)
 
 
