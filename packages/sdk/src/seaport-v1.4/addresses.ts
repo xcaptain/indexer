@@ -40,6 +40,19 @@ export const OpenseaConduit: ChainIdToAddress = {
   [Network.Optimism]: "0x1e0049783f008a0085193e00003d00cd54003c71",
 };
 
+// https://github.com/ProjectOpenSea/seaport/blob/0a8e82ce7262b5ce0e67fa98a2131fd4c47c84e9/contracts/conduit/ConduitController.sol#L493
+export const ConduitCodeHash: ChainIdToAddress = {
+  [Network.Ethereum]: "0x023d904f2503c37127200ca07b976c3a53cc562623f67023115bf311f5805059",
+  [Network.EthereumGoerli]: "0x023d904f2503c37127200ca07b976c3a53cc562623f67023115bf311f5805059",
+  [Network.Optimism]: "0x023d904f2503c37127200ca07b976c3a53cc562623f67023115bf311f5805059",
+  [Network.Gnosis]: "0x023d904f2503c37127200ca07b976c3a53cc562623f67023115bf311f5805059",
+  [Network.Polygon]: "0x023d904f2503c37127200ca07b976c3a53cc562623f67023115bf311f5805059",
+  [Network.PolygonMumbai]: "0x023d904f2503c37127200ca07b976c3a53cc562623f67023115bf311f5805059",
+  [Network.Arbitrum]: "0x023d904f2503c37127200ca07b976c3a53cc562623f67023115bf311f5805059",
+  [Network.AvalancheFuji]: "0x023d904f2503c37127200ca07b976c3a53cc562623f67023115bf311f5805059",
+  [Network.Avalanche]: "0x023d904f2503c37127200ca07b976c3a53cc562623f67023115bf311f5805059",
+};
+
 // Zones
 
 export const PausableZone: ChainIdToAddress = {

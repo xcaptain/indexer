@@ -23,13 +23,8 @@ import * as blurCheck from "@/orderbook/orders/blur/check";
 import * as looksRareSellToken from "@/orderbook/orders/looks-rare/build/sell/token";
 import * as looksRareCheck from "@/orderbook/orders/looks-rare/check";
 
-// Seaport
-import * as seaportSellToken from "@/orderbook/orders/seaport/build/sell/token";
-import * as seaportCheck from "@/orderbook/orders/seaport/check";
-
-// Seaport v1.4
-import * as seaportV14SellToken from "@/orderbook/orders/seaport-v1.4/build/sell/token";
-import * as seaportV14Check from "@/orderbook/orders/seaport-v1.4/check";
+// Seaport base
+import * as seaportBaseSellToken from "@/orderbook/orders/seaport-base/build/sell/token";
 
 // X2Y2
 import * as x2y2SellToken from "@/orderbook/orders/x2y2/build/sell/token";
@@ -651,82 +646,8 @@ export const getExecuteListV5Options: RouteOptions = {
                 break;
               }
 
-              case "seaport": {
-                if (!["reservoir"].includes(params.orderbook)) {
-                  return errors.push({ message: "Unsupported orderbook", orderIndex: i });
-                }
-
-                const order = await seaportSellToken.build({
-                  ...params,
-                  orderbook: params.orderbook as "opensea" | "reservoir",
-                  maker,
-                  contract,
-                  tokenId,
-                  source,
-                });
-
-                // Will be set if an approval is needed before listing
-                let approvalTx: TxData | undefined;
-
-                // Check the order's fillability
-                try {
-                  await seaportCheck.offChainCheck(order, { onChainApprovalRecheck: true });
-                } catch (error: any) {
-                  switch (error.message) {
-                    case "no-balance-no-approval":
-                    case "no-balance": {
-                      return errors.push({ message: "Maker does not own token", orderIndex: i });
-                    }
-
-                    case "no-approval": {
-                      // Generate an approval transaction
-
-                      const exchange = new Sdk.Seaport.Exchange(config.chainId);
-                      const info = order.getInfo()!;
-
-                      const kind = order.params.kind?.startsWith("erc721") ? "erc721" : "erc1155";
-                      approvalTx = (
-                        kind === "erc721"
-                          ? new Sdk.Common.Helpers.Erc721(baseProvider, info.contract)
-                          : new Sdk.Common.Helpers.Erc1155(baseProvider, info.contract)
-                      ).approveTransaction(maker, exchange.deriveConduit(order.params.conduitKey));
-
-                      break;
-                    }
-                  }
-                }
-
-                steps[1].items.push({
-                  status: approvalTx ? "incomplete" : "complete",
-                  data: approvalTx,
-                  orderIndexes: [i],
-                });
-                steps[2].items.push({
-                  status: "incomplete",
-                  data: {
-                    sign: order.getSignatureData(),
-                    post: {
-                      endpoint: "/order/v3",
-                      method: "POST",
-                      body: {
-                        order: {
-                          kind: params.orderKind,
-                          data: {
-                            ...order.params,
-                          },
-                        },
-                        orderbook: params.orderbook,
-                        orderbookApiKey: params.orderbookApiKey,
-                        source,
-                      },
-                    },
-                  },
-                  orderIndexes: [i],
-                });
-
-                break;
-              }
-
+              // TODO: @Joey double check, add more seaport-fork protocols here.
+              case "seaport":
               case "seaport-v1.4": {
                 if (!["reservoir", "opensea"].includes(params.orderbook)) {
                   return errors.push({ message: "Unsupported orderbook", orderIndex: i });
@@ -734,6 +655,7 @@ export const getExecuteListV5Options: RouteOptions = {
 
                 // OpenSea expects a royalty of at least 0.5%
                 if (
+                  params.orderKind === "seaport-v1.4" &&
                   params.orderbook === "opensea" &&
                   params.royaltyBps !== undefined &&
                   Number(params.royaltyBps) < 50
@@ -750,22 +672,30 @@ export const getExecuteListV5Options: RouteOptions = {
                     }
                   | undefined;
 
-                const order = await seaportV14SellToken.build({
-                  ...params,
-                  ...options,
-                  orderbook: params.orderbook as "reservoir" | "opensea",
-                  maker,
-                  contract,
-                  tokenId,
-                  source,
-                });
+                const builder =
+                  params.orderKind === "seaport"
+                    ? Sdk.Seaport.Builders.SingleToken
+                    : Sdk.SeaportV14.Builders.SingleToken;
+                // TODO: @Joey add orderBook in order interface
+                const order = await seaportBaseSellToken.build(
+                  {
+                    ...params,
+                    ...options,
+                    orderbook: params.orderbook as "opensea" | "reservoir",
+                    maker,
+                    contract,
+                    tokenId,
+                    source,
+                  },
+                  builder
+                );
 
                 // Will be set if an approval is needed before listing
                 let approvalTx: TxData | undefined;
 
                 // Check the order's fillability
                 try {
-                  await seaportV14Check.offChainCheck(order, { onChainApprovalRecheck: true });
+                  await order.offChainCheck({ onChainApprovalRecheck: true });
                 } catch (error: any) {
                   switch (error.message) {
                     case "no-balance-no-approval":
@@ -776,7 +706,7 @@ export const getExecuteListV5Options: RouteOptions = {
                     case "no-approval": {
                       // Generate an approval transaction
 
-                      const exchange = new Sdk.SeaportV14.Exchange(config.chainId);
+                      const exchange = order.getExchange();
                       const info = order.getInfo()!;
 
                       const kind = order.params.kind?.startsWith("erc721") ? "erc721" : "erc1155";
@@ -797,18 +727,20 @@ export const getExecuteListV5Options: RouteOptions = {
                   orderIndexes: [i],
                 });
 
-                bulkOrders["seaport-v1.4"].push({
-                  order: {
-                    kind: params.orderKind,
-                    data: {
-                      ...order.params,
+                if (order.supportBulk()) {
+                  bulkOrders["seaport-v1.4"].push({
+                    order: {
+                      kind: "seaport-v1.4",
+                      data: {
+                        ...order.params,
+                      },
                     },
-                  },
-                  orderbook: params.orderbook,
-                  orderbookApiKey: params.orderbookApiKey,
-                  source,
-                  orderIndex: i,
-                });
+                    orderbook: params.orderbook,
+                    orderbookApiKey: params.orderbookApiKey,
+                    source,
+                    orderIndex: i,
+                  });
+                }
 
                 break;
               }

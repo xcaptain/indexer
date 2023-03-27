@@ -5,12 +5,13 @@ import { BaseBuildParams, BaseBuilder, BaseOrderInfo } from "../base";
 import { Order } from "../../order";
 import * as Types from "../../types";
 import { bn, s } from "../../../utils";
+import { IBuilder } from "../../../seaport-base/builders/base";
 
 interface BuildParams extends BaseBuildParams {
   tokenId: BigNumberish;
 }
 
-export class SingleTokenBuilder extends BaseBuilder {
+export class SingleTokenBuilder extends BaseBuilder implements IBuilder<Order> {
   public getInfo(order: Order): BaseOrderInfo | undefined {
     try {
       const { side, isDynamic } = this.getBaseInfo(order);
@@ -151,7 +152,7 @@ export class SingleTokenBuilder extends BaseBuilder {
     return true;
   }
 
-  public build(params: BuildParams) {
+  public build(params: BuildParams): Order {
     this.defaultInitialize(params);
 
     if (params.side === "sell") {

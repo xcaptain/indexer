@@ -219,8 +219,8 @@ export const start = async (): Promise<void> => {
           // Generate the rate limiting header and add them to the request object to be added to the response in the onPreResponse event
           request.headers["X-RateLimit-Limit"] = `${rateLimitRule.points}`;
           request.headers["X-RateLimit-Remaining"] = `${rateLimiterRes.remainingPoints}`;
-          request.headers["X-RateLimit-Reset"] = `${new Date(
-            Date.now() + rateLimiterRes.msBeforeNext
+          request.headers["X-RateLimit-Reset"] = `${Math.round(
+            (Date.now() + rateLimiterRes.msBeforeNext) / 1000
           )}`;
         }
       } catch (error) {

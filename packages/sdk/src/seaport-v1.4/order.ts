@@ -18,6 +18,7 @@ import { bn, getCurrentTimestamp, lc, n, s } from "../utils";
 
 import ConduitControllerAbi from "./abis/ConduitController.json";
 import ExchangeAbi from "./abis/Exchange.json";
+import { Exchange } from "./exchange";
 
 export class Order {
   public chainId: number;
@@ -39,6 +40,18 @@ export class Order {
 
     // Fix signature
     this.fixSignature();
+  }
+
+  public async offChainCheck() {
+    // TODO: @Joey implement me.
+  }
+
+  public getExchange(): Exchange {
+    return new Exchange(this.chainId);
+  }
+
+  public supportBulk(): boolean {
+    return true;
   }
 
   public hash() {
