@@ -1,43 +1,17 @@
 import { idb, redb } from "@/common/db";
 import * as Pusher from "pusher";
-import { fromBuffer, now } from "@/common/utils";
+import { formatEth, fromBuffer, now } from "@/common/utils";
 import { Orders } from "@/utils/orders";
 import _ from "lodash";
 import { config } from "@/config/index";
-import { redis } from "@/common/redis";
+import { redis, redisWebsocketPublisher } from "@/common/redis";
 import { logger } from "@/common/logger";
 import { Sources } from "@/models/sources";
 import { getJoiPriceObject } from "@/common/joi";
-import * as Sdk from "@reservoir0x/sdk";
 
 export class NewTopBidWebsocketEvent {
   public static async triggerEvent(data: NewTopBidWebsocketEventInfo) {
     const criteriaBuildQuery = Orders.buildCriteriaQuery("orders", "token_set_id", false);
-    const sources = await Sources.getInstance();
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const parseFloorPrice = async (type: "normalized" | "non_flagged" | "", order: any) => {
-      const floorAskCurrency = order[`${type}floor_order_currency`]
-        ? fromBuffer(order[`${type}floor_order_currency`])
-        : Sdk.Common.Addresses.Eth[config.chainId];
-      return {
-        id: order[`${type}floor_sell_id`],
-        sourceDomain: sources.get(Number(order[`${type}floor_sell_source_id_int`]))?.domain,
-        price: order[`${type}floor_sell_id`]
-          ? await getJoiPriceObject(
-              {
-                gross: {
-                  // amount: r.floor_sell_currency_value ?? r.floor_sell_value,
-                  amount:
-                    order[`${type}floor_order_currency_value`] ?? order[`${type}floor_sell_value`],
-                  nativeAmount: order[`${type}floor_sell_value`],
-                },
-              },
-              floorAskCurrency
-            )
-          : null,
-      };
-    };
 
     const order = await idb.oneOrNone(
       `
@@ -61,7 +35,7 @@ export class NewTopBidWebsocketEvent {
                      0
                    ) AS "valid_until",
                 (${criteriaBuildQuery}) AS criteria,
-                               c.id as collection_id,
+                c.id as collection_id,
                 c.slug as collection_slug,
                 c.name as collection_name,
                 c.normalized_floor_sell_id AS normalized_floor_sell_id,
@@ -74,12 +48,7 @@ export class NewTopBidWebsocketEvent {
                 c.floor_sell_source_id_int AS floor_sell_source_id_int,
                 floor_order.currency as floor_order_currency,
                 floor_order.currency_value as floor_order_currency_value,
-                c.non_flagged_floor_sell_id AS non_flagged_floor_sell_id,
-                c.non_flagged_floor_sell_value AS non_flagged_floor_sell_value,
-                c.non_flagged_floor_sell_source_id_int AS non_flagged_floor_sell_source_id_int,
-                non_flagged_floor_order.currency as non_flagged_floor_order_currency,
-                non_flagged_floor_order.currency_value as non_flagged_floor_order_currency_value
-
+                COALESCE(((orders.value / (c.floor_sell_value * (1-((COALESCE(c.royalties_bps, 0)::float + 250) / 10000)))::numeric(78, 0) ) - 1) * 100, 0) AS floor_difference_percentage
 
               FROM orders
                 JOIN collections c on orders.contract = c.contract
@@ -107,6 +76,35 @@ export class NewTopBidWebsocketEvent {
     const source = (await Sources.getInstance()).get(Number(order.source_id_int));
 
     for (const ownersChunk of ownersChunks) {
+      const [price, priceNormalized] = await Promise.all([
+        getJoiPriceObject(
+          {
+            net: {
+              amount: order.currency_value ?? order.value,
+              nativeAmount: order.value,
+            },
+            gross: {
+              amount: order.currency_price ?? order.price,
+              nativeAmount: order.price,
+            },
+          },
+          fromBuffer(order.currency)
+        ),
+        getJoiPriceObject(
+          {
+            net: {
+              amount: order.currency_normalized_value ?? order.currency_value ?? order.value,
+              nativeAmount: order.normalized_value ?? order.value,
+            },
+            gross: {
+              amount: order.currency_price ?? order.price,
+              nativeAmount: order.price,
+            },
+          },
+          fromBuffer(order.currency)
+        ),
+      ]);
+
       payloads.push({
         order: {
           id: order.id,
@@ -121,67 +119,46 @@ export class NewTopBidWebsocketEvent {
             icon: source?.getIcon(),
             url: source?.metadata.url,
           },
-          price: await getJoiPriceObject(
-            {
-              net: {
-                amount: order.currency_value ?? order.value,
-                nativeAmount: order.value,
-              },
-              gross: {
-                amount: order.currency_price ?? order.price,
-                nativeAmount: order.price,
-              },
-            },
-            fromBuffer(order.currency)
-          ),
-          priceNormalized: await getJoiPriceObject(
-            {
-              net: {
-                amount: order.currency_normalized_value ?? order.currency_value ?? order.value,
-                nativeAmount: order.normalized_value ?? order.value,
-              },
-              gross: {
-                amount: order.currency_price ?? order.price,
-                nativeAmount: order.price,
-              },
-            },
-            fromBuffer(order.currency)
-          ),
+          price: {
+            currency: price.currency,
+            amount: price.amount,
+            netAmount: price.netAmount,
+            normalizedNetAmount: priceNormalized.netAmount,
+          },
+
           criteria: order.criteria,
         },
         owners: ownersChunk,
-        colllection: {
+        collection: {
           id: order.collection_id,
           slug: order.collection_slug,
           name: order.collection_name,
-          floorAsk: {
-            priceNormalized: await parseFloorPrice("normalized", order),
-            price: await parseFloorPrice("", order),
-            priceNonflagged: await parseFloorPrice("non_flagged", order),
-          },
+          floorAskPrice: formatEth(order.floor_sell_value),
+          floorAskPriceNormalized: formatEth(order.normalized_floor_sell_value),
+          floorDifferencePercentage: _.round(order.floor_difference_percentage || 0, 2),
         },
       });
     }
 
-    // try {
-    //   logger.info(
-    //     "top-bids-websocket-event",
-    //     `Triggering event. orderId=${data.orderId}, tokenSetId=${order.token_set_id}`
-    //   );
-    //   await Promise.all(
-    //     payloads.map((payload) =>
-    //       redisWebsocketPublisher.publish(
-    //         "top-bids",
-    //         JSON.stringify({
-    //           event: "new-top-bid",
-    //           data: payload,
-    //         })
-    //       )
-    //     )
-    //   );
-    // } catch (e) {
-    //   logger.error("top-bids-websocket-event", `Error triggering event. ${e}`);
-    // }
+    try {
+      logger.info(
+        "top-bids-websocket-event",
+        `Triggering event. orderId=${data.orderId}, tokenSetId=${order.token_set_id}`
+      );
+      await Promise.all(
+        payloads.map((payload) =>
+          redisWebsocketPublisher.publish(
+            "top-bids",
+            JSON.stringify({
+              event: "new-top-bid",
+              data: payload,
+            })
+          )
+        )
+      );
+    } catch (e) {
+      logger.error("top-bids-websocket-event", `Error triggering event. ${e}`);
+    }
 
     const server = new Pusher.default({
       appId: config.websocketServerAppId,
