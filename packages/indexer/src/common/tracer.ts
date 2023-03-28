@@ -11,6 +11,9 @@ if (process.env.DATADOG_AGENT_URL) {
     clientIpEnabled: true,
     service,
     url: process.env.DATADOG_AGENT_URL,
+    ingestion: {
+      sampleRate: 0.1,
+    },
   });
 
   tracer.use("hapi", {
