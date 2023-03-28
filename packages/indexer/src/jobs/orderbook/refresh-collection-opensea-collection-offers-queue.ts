@@ -4,7 +4,7 @@ import { Job, Queue, QueueScheduler, Worker } from "bullmq";
 import { randomUUID } from "crypto";
 
 import { logger } from "@/common/logger";
-import { acquireLock, redis, releaseLock } from "@/common/redis";
+import { acquireLock, getLockExpiration, redis, releaseLock } from "@/common/redis";
 import { config } from "@/config/index";
 import { redb } from "@/common/db";
 import { parseProtocolData } from "@/websockets/opensea";
@@ -34,88 +34,102 @@ if (config.doBackgroundWork) {
       const { collection } = job.data;
 
       if (await acquireLock(getLockName(collection), 60)) {
-        const collectionResult = await redb.oneOrNone(
-          `
+        const rateLimitExpiresIn = await getLockExpiration(getRateLimitLockName());
+
+        if (rateLimitExpiresIn > 0) {
+          logger.info(
+            QUEUE_NAME,
+            `Rate Limited. rateLimitExpiresIn=${rateLimitExpiresIn}, collection=${collection}`
+          );
+
+          await addToQueue(collection, rateLimitExpiresIn);
+        } else {
+          const collectionResult = await redb.oneOrNone(
+            `
           SELECT
             collections.contract,
             collections.slug
           FROM collections
           WHERE collections.id = $/collection/
         `,
-          {
-            collection,
-          }
-        );
+            {
+              collection,
+            }
+          );
 
-        if (collectionResult) {
-          try {
-            const fetchCollectionOffersResponse = await axios.get(
-              `https://${
-                config.chainId === 5 ? "testnets-api" : "api"
-              }.opensea.io/api/v2/offers/collection/${collectionResult.slug}`,
-              {
-                headers:
-                  config.chainId === 5
-                    ? {
-                        "Content-Type": "application/json",
-                      }
-                    : {
-                        "Content-Type": "application/json",
-                        "X-Api-Key": config.openSeaApiKey,
-                      },
-              }
-            );
-
-            const collectionOffers = fetchCollectionOffersResponse.data.offers;
-
-            if (collectionOffers.length) {
-              logger.info(
-                QUEUE_NAME,
-                `collectionOffers. collectionOffersCount=${collectionOffers.length}`
+          if (collectionResult) {
+            try {
+              const fetchCollectionOffersResponse = await axios.get(
+                `https://${
+                  config.chainId === 5 ? "testnets-api" : "api"
+                }.opensea.io/api/v2/offers/collection/${collectionResult.slug}`,
+                {
+                  headers:
+                    config.chainId === 5
+                      ? {
+                          "Content-Type": "application/json",
+                        }
+                      : {
+                          "Content-Type": "application/json",
+                          "X-Api-Key": config.openSeaApiKey,
+                        },
+                }
               );
 
-              for (const collectionOffer of collectionOffers) {
-                if (getSupportedChainName() === collectionOffer.chain) {
-                  const openSeaOrderParams = {
-                    kind: "contract-wide",
-                    side: "buy",
-                    hash: collectionOffer.order_hash,
-                    contract: fromBuffer(collectionResult.contract),
-                    collectionSlug: collectionResult.slug,
-                  } as OpenseaOrderParams;
+              const collectionOffers = fetchCollectionOffersResponse.data.offers;
 
-                  if (openSeaOrderParams) {
-                    const protocolData = parseProtocolData(collectionOffer);
+              if (collectionOffers.length) {
+                logger.info(
+                  QUEUE_NAME,
+                  `collectionOffers. collectionOffersCount=${collectionOffers.length}`
+                );
 
-                    if (protocolData) {
-                      const orderInfo = {
-                        kind: protocolData.kind,
-                        info: {
-                          orderParams: protocolData.order.params,
-                          metadata: {
-                            originatedAt: new Date(Date.now()).toISOString(),
+                for (const collectionOffer of collectionOffers) {
+                  if (getSupportedChainName() === collectionOffer.chain) {
+                    const openSeaOrderParams = {
+                      kind: "contract-wide",
+                      side: "buy",
+                      hash: collectionOffer.order_hash,
+                      contract: fromBuffer(collectionResult.contract),
+                      collectionSlug: collectionResult.slug,
+                    } as OpenseaOrderParams;
+
+                    if (openSeaOrderParams) {
+                      const protocolData = parseProtocolData(collectionOffer);
+
+                      if (protocolData) {
+                        const orderInfo = {
+                          kind: protocolData.kind,
+                          info: {
+                            orderParams: protocolData.order.params,
+                            metadata: {
+                              originatedAt: new Date(Date.now()).toISOString(),
+                            },
+                            isOpenSea: true,
+                            openSeaOrderParams,
                           },
-                          isOpenSea: true,
-                          openSeaOrderParams,
-                        },
-                        relayToArweave: false,
-                        validateBidValue: true,
-                      } as any;
+                          relayToArweave: false,
+                          validateBidValue: true,
+                        } as any;
 
-                      await orderbookOrders.addToQueue([orderInfo]);
+                        await orderbookOrders.addToQueue([orderInfo]);
+                      }
                     }
                   }
                 }
               }
-            }
-          } catch (error) {
-            logger.error(
-              QUEUE_NAME,
-              `fetchCollectionOffers failed. job=${JSON.stringify(job)}, error=${error}`
-            );
+            } catch (error) {
+              logger.error(
+                QUEUE_NAME,
+                `fetchCollectionOffers failed. job=${JSON.stringify(job)}, error=${JSON.stringify(
+                  error
+                )}`
+              );
 
-            if ((error as any).response.status === 429) {
-              await addToQueue(collection, 5000);
+              if ((error as any).response.status === 429) {
+                await acquireLock(getRateLimitLockName(), 5);
+                await addToQueue(collection, 5000);
+              }
             }
           }
         }
@@ -137,6 +151,10 @@ if (config.doBackgroundWork) {
 
 export const getLockName = (collection: string) => {
   return `${QUEUE_NAME}:${collection}-lock`;
+};
+
+export const getRateLimitLockName = () => {
+  return `${QUEUE_NAME}:rate-limit`;
 };
 
 export const addToQueue = async (collection: string, delay = 0) => {
