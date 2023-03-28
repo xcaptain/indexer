@@ -93,7 +93,7 @@ if (config.doBackgroundWork) {
                         info: {
                           orderParams: protocolData.order.params,
                           metadata: {
-                            originatedAt: Math.floor(Date.now() / 1000),
+                            originatedAt: new Date(Date.now()).toISOString(),
                           },
                           isOpenSea: true,
                           openSeaOrderParams,
