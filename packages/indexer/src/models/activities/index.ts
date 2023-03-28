@@ -219,7 +219,8 @@ export class Activities {
         baseQuery += ` WHERE (event_timestamp, id) ${sign} ($/eventTimestamp/, $/id/)`;
       }
 
-      baseQuery += ` ORDER BY event_timestamp ${sortDirection}, id ${sortDirection}`;
+      const nulls = sortDirection == "desc" ? "NULLS LAST" : "NULLS FIRST";
+      baseQuery += ` ORDER BY event_timestamp ${sortDirection} ${nulls}, id ${sortDirection}`;
     } else {
       if (!_.isNull(continuation) && continuation !== "null") {
         id = continuation;
@@ -283,6 +284,7 @@ export class Activities {
     let metadataQuery = "";
     let metadataOrderQuery = "";
     let collectionFilter = "";
+    let nullsLast = "";
 
     if (!_.isNull(createdBefore)) {
       continuation = `AND activities.${sortByColumn} < $/createdBefore/`;
@@ -293,6 +295,7 @@ export class Activities {
     }
 
     if (collectionsSetId) {
+      nullsLast = "NULLS LAST";
       collectionFilter = `WHERE activities.collection_id IN (select collection_id
             FROM collections_sets_collections
             WHERE collections_set_id = $/collectionsSetId/
@@ -301,6 +304,7 @@ export class Activities {
       collectionFilter =
         "WHERE activities.collection_id IN (SELECT id FROM collections WHERE community = $/community/)";
     } else if (collectionId) {
+      nullsLast = "NULLS LAST";
       collectionFilter = "WHERE activities.collection_id = $/collectionId/";
     }
 
@@ -458,7 +462,7 @@ export class Activities {
              ${collectionFilter}
              ${continuation}
              ${typesFilter}
-             ORDER BY activities.${sortByColumn} DESC
+             ORDER BY activities.${sortByColumn} DESC ${nullsLast}
              LIMIT $/limit/`,
       {
         collectionId,

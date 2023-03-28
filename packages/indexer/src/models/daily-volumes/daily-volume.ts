@@ -324,7 +324,6 @@ export class DailyVolume {
     date.setUTCHours(0, 0, 0, 0);
 
     const dateTimestamp = date.getTime();
-    // the beginning of the day 7 days ago to the end of that day
     const day7Timestamps = [
       dateTimestamp / 1000 - 7 * 24 * 3600,
       dateTimestamp / 1000 - 6 * 24 * 3600,
