@@ -72,7 +72,7 @@ export const releaseLock = async (name: string) => {
 };
 
 export const getLockExpiration = async (name: string) => {
-  return await redis.ttl(name);
+  return await redis.pttl(name);
 };
 
 export const getMemUsage = async () => {
