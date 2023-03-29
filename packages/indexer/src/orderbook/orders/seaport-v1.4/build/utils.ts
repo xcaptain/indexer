@@ -1,4 +1,4 @@
-import { AddressZero } from "@ethersproject/constants";
+import { AddressZero, HashZero } from "@ethersproject/constants";
 import * as Sdk from "@reservoir0x/sdk";
 import { generateSourceBytes, getRandomBytes } from "@reservoir0x/sdk/dist/utils";
 
@@ -70,7 +70,7 @@ export const getBuildInfo = async (
   const exchange = new Sdk.SeaportV14.Exchange(config.chainId);
 
   // Use OpenSea's conduit for sharing approvals (where available)
-  const conduitKey = Sdk.SeaportV14.Addresses.OpenseaConduitKey[config.chainId];
+  const conduitKey = Sdk.SeaportV14.Addresses.OpenseaConduitKey[config.chainId] ?? HashZero;
 
   // No zone by default
   let zone = AddressZero;
