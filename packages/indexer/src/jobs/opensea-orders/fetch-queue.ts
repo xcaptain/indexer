@@ -36,63 +36,53 @@ if (config.doBackgroundWork) {
   const worker = new Worker(
     QUEUE_NAME,
     async () => {
+      let collectionOffers = [];
+      let rateLimitExpiredIn = 0;
+
       const pendingRefreshOpenseaCollectionOffersCollections =
         new PendingRefreshOpenseaCollectionOffersCollections();
       const refreshOpenseaCollectionOffersCollections =
         await pendingRefreshOpenseaCollectionOffersCollections.get(1);
 
       // If no more tokens
-      if (_.isEmpty(refreshOpenseaCollectionOffersCollections)) {
-        await releaseLock(getLockName());
-        return;
-      }
-
-      logger.info(
-        QUEUE_NAME,
-        `Debug1. refreshOpenseaCollectionOffersCollections=${JSON.stringify(
-          refreshOpenseaCollectionOffersCollections
-        )}`
-      );
-
-      let collectionOffers = [];
-      let rateLimitExpiredIn = 0;
-
-      try {
-        const fetchCollectionOffersResponse = await axios.get(
-          `https://${
-            config.chainId === 5 ? "testnets-api" : "api"
-          }.opensea.io/api/v2/offers/collection/${
-            refreshOpenseaCollectionOffersCollections[0].slug
-          }`,
-          {
-            headers:
-              config.chainId === 5
-                ? {
-                    "Content-Type": "application/json",
-                  }
-                : {
-                    "Content-Type": "application/json",
-                    "X-Api-Key": config.openSeaApiKey,
-                  },
-          }
-        );
-
-        collectionOffers = fetchCollectionOffersResponse.data.offers;
-      } catch (error) {
-        logger.error(QUEUE_NAME, `fetchCollectionOffers failed. error=${JSON.stringify(error)}`);
-
-        if ((error as any).response?.status === 429) {
-          rateLimitExpiredIn = 5;
-          pendingRefreshOpenseaCollectionOffersCollections.add(
-            refreshOpenseaCollectionOffersCollections,
-            true
+      if (!_.isEmpty(refreshOpenseaCollectionOffersCollections)) {
+        try {
+          const fetchCollectionOffersResponse = await axios.get(
+            `https://${
+              config.chainId === 5 ? "testnets-api" : "api"
+            }.opensea.io/api/v2/offers/collection/${
+              refreshOpenseaCollectionOffersCollections[0].slug
+            }`,
+            {
+              headers:
+                config.chainId === 5
+                  ? {
+                      "Content-Type": "application/json",
+                    }
+                  : {
+                      "Content-Type": "application/json",
+                      "X-Api-Key": config.openSeaApiKey,
+                    },
+            }
           );
+
+          collectionOffers = fetchCollectionOffersResponse.data.offers;
+        } catch (error) {
+          logger.error(QUEUE_NAME, `fetchCollectionOffers failed. error=${JSON.stringify(error)}`);
+
+          if ((error as any).response?.status === 429) {
+            rateLimitExpiredIn = 5;
+            pendingRefreshOpenseaCollectionOffersCollections.add(
+              refreshOpenseaCollectionOffersCollections,
+              true
+            );
+          }
         }
       }
 
       logger.info(
         QUEUE_NAME,
-        `Debug2. refreshOpenseaCollectionOffersCollections=${JSON.stringify(
+        `Debug. refreshOpenseaCollectionOffersCollections=${JSON.stringify(
           refreshOpenseaCollectionOffersCollections
         )}, collectionOffersCount=${
           collectionOffers.length
