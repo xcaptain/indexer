@@ -25,6 +25,7 @@ import "@/jobs/token-updates";
 import "@/jobs/update-attribute";
 import "@/jobs/websocket-events";
 import "@/jobs/metrics";
+import "@/jobs/opensea-orders";
 
 // Export all job queues for monitoring through the BullMQ UI
 
@@ -113,7 +114,6 @@ import * as orderbookPostOrderExternal from "@/jobs/orderbook/post-order-externa
 import * as orderbookTokenSets from "@/jobs/orderbook/token-sets-queue";
 import * as orderbookOpenseaListings from "@/jobs/orderbook/opensea-listings-queue";
 import * as orderbookSaveOpenseaWebsocketEvents from "@/jobs/orderbook/save-opensea-websocket-events-queue";
-import * as orderbookRefreshCollectionOpenseaCollectionOffers from "@/jobs/orderbook/refresh-collection-opensea-collection-offers-queue";
 
 import * as fetchSourceInfo from "@/jobs/sources/fetch-source-info";
 
@@ -135,6 +135,9 @@ import * as updateAttributeCounts from "@/jobs/update-attribute/update-attribute
 import * as websocketEventsTriggerQueue from "@/jobs/websocket-events/trigger-queue";
 
 import * as countApiUsage from "@/jobs/metrics/count-api-usage";
+
+import * as openseaOrdersProcessQueue from "@/jobs/opensea-orders/process-queue";
+import * as openseaOrdersFetchQueue from "@/jobs/opensea-orders/fetch-queue";
 
 export const gracefulShutdownJobWorkers = [
   orderUpdatesById.worker,
@@ -235,7 +238,6 @@ export const allJobQueues = [
   orderbookTokenSets.queue,
   orderbookOpenseaListings.queue,
   orderbookSaveOpenseaWebsocketEvents.queue,
-  orderbookRefreshCollectionOpenseaCollectionOffers.queue,
 
   fetchSourceInfo.queue,
 
@@ -257,4 +259,7 @@ export const allJobQueues = [
   websocketEventsTriggerQueue.queue,
 
   countApiUsage.queue,
+
+  openseaOrdersProcessQueue.queue,
+  openseaOrdersFetchQueue.queue,
 ];
