@@ -175,7 +175,7 @@ export class Order {
   public async checkFillability(provider: Provider) {
     const exchange = new Exchange(this.chainId);
 
-    const status = await exchange.contract.getOrderStatus(this.hash());
+    const status = await exchange.contract.connect(provider).getOrderStatus(this.hash());
     if (status.isCancelled) {
       throw new Error("not-fillable");
     }
@@ -183,7 +183,7 @@ export class Order {
       throw new Error("not-fillable");
     }
 
-    const makerConduit = exchange.conduitController.deriveConduit(this.params.conduitKey);
+    const makerConduit = exchange.deriveConduit(this.params.conduitKey);
 
     const info = this.getInfo()! as BaseOrderInfo;
     if (info.side === "buy") {
