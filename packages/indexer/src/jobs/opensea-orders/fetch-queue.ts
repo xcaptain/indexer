@@ -68,13 +68,21 @@ if (config.doBackgroundWork) {
 
           collectionOffers = fetchCollectionOffersResponse.data.offers;
         } catch (error) {
-          logger.error(QUEUE_NAME, `fetchCollectionOffers failed. error=${JSON.stringify(error)}`);
-
           if ((error as any).response?.status === 429) {
+            logger.info(
+              QUEUE_NAME,
+              `fetchCollectionOffers throttled. error=${JSON.stringify(error)}`
+            );
+
             rateLimitExpiredIn = 5;
             pendingRefreshOpenseaCollectionOffersCollections.add(
               refreshOpenseaCollectionOffersCollections,
               true
+            );
+          } else {
+            logger.error(
+              QUEUE_NAME,
+              `fetchCollectionOffers failed. error=${JSON.stringify(error)}`
             );
           }
         }
