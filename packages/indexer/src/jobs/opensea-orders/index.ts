@@ -40,10 +40,10 @@ const getCollections = async () => {
 // BACKGROUND WORKER ONLY
 if (config.doBackgroundWork) {
   cron.schedule(
-    "*/5 * * * *",
+    "* */10 * * *",
     async () =>
       await redlock
-        .acquire([`refresh-opensea-collection-offers-collections-cron-lock`], (5 * 60 - 5) * 1000)
+        .acquire([`refresh-opensea-collection-offers-collections-cron-lock`], (10 * 60 - 5) * 1000)
         .then(async () => {
           getCollections()
             .then(async (collections) => {
