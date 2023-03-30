@@ -13,6 +13,9 @@ import { getSupportedChainName } from "@/websockets/opensea/utils";
 import { OpenseaOrderParams } from "@/orderbook/orders/seaport";
 import { parseProtocolData } from "@/websockets/opensea";
 import * as orderbookOrders from "@/jobs/orderbook/orders-queue";
+import { Tokens } from "@/models/tokens";
+import { Collections } from "@/models/collections";
+import * as collectionUpdatesMetadata from "@/jobs/collection-updates/metadata-queue";
 
 const QUEUE_NAME = "opensea-orders-fetch-queue";
 
@@ -79,6 +82,30 @@ if (config.doBackgroundWork) {
               refreshOpenseaCollectionOffersCollections,
               true
             );
+          } else if ((error as any).response?.status === 404) {
+            logger.info(
+              QUEUE_NAME,
+              `fetchCollectionOffers throttled. refreshOpenseaCollectionOffersCollections=${refreshOpenseaCollectionOffersCollections}, error=${JSON.stringify(
+                error
+              )}`
+            );
+
+            try {
+              const tokenId = await Tokens.getSingleToken(
+                refreshOpenseaCollectionOffersCollections[0].collection
+              );
+              const collectionResult = await Collections.getById(
+                refreshOpenseaCollectionOffersCollections[0].collection
+              );
+
+              await collectionUpdatesMetadata.addToQueue(
+                collectionResult!.contract,
+                tokenId,
+                collectionResult!.community
+              );
+            } catch {
+              // Skip on any errors
+            }
           } else {
             logger.error(
               QUEUE_NAME,
