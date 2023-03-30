@@ -49,19 +49,19 @@ if (config.doBackgroundWork) {
         try {
           const fetchCollectionOffersResponse = await axios.get(
             `https://${
-              config.chainId === 5 ? "testnets-api" : "api"
+              config.chainId !== 5 ? "api" : "testnets-api"
             }.opensea.io/api/v2/offers/collection/${
               refreshOpenseaCollectionOffersCollections[0].slug
             }`,
             {
               headers:
-                config.chainId === 5
+                config.chainId !== 5
                   ? {
                       "Content-Type": "application/json",
+                      "X-Api-Key": config.openSeaApiKey,
                     }
                   : {
                       "Content-Type": "application/json",
-                      "X-Api-Key": config.openSeaApiKey,
                     },
             }
           );

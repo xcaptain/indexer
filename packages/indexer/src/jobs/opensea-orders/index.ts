@@ -40,7 +40,7 @@ const getCollections = async () => {
 // BACKGROUND WORKER ONLY
 if (config.doBackgroundWork) {
   cron.schedule(
-    "* */10 * * *",
+    "*/10 * * * *",
     async () =>
       await redlock
         .acquire([`refresh-opensea-collection-offers-collections-cron-lock`], (10 * 60 - 5) * 1000)
@@ -60,8 +60,11 @@ if (config.doBackgroundWork) {
                 }))
               );
             })
-            .catch(() => {
-              // Skip on any errors
+            .catch((error) => {
+              logger.error(
+                "refresh-opensea-collection-offers-collections",
+                `Error getting collections. error=${error}`
+              );
             });
         })
         .catch(() => {
