@@ -2,7 +2,6 @@ import { AddressZero } from "@ethersproject/constants";
 import * as Sdk from "@reservoir0x/sdk";
 import { generateMerkleTree } from "@reservoir0x/sdk/dist/common/helpers/merkle";
 import { OrderKind } from "@reservoir0x/sdk/dist/seaport-base/types";
-import axios from "axios";
 import _ from "lodash";
 import pLimit from "p-limit";
 
@@ -30,26 +29,26 @@ import * as ordersUpdateById from "@/jobs/order-updates/by-id-queue";
 import { allPlatformFeeRecipients } from "@/events-sync/handlers/royalties/config";
 
 export type OrderInfo = {
-  kind?: "full";
+  kind: "full";
   orderParams: Sdk.SeaportBase.Types.OrderComponents;
   metadata: OrderMetadata;
   isReservoir?: boolean;
   isOpenSea?: boolean;
-  openSeaOrderParams?: OpenseaOrderParams;
+  openSeaOrderParams?: PartialOrderComponents;
 };
 
-export declare type OpenseaOrderParams = {
+export declare type PartialOrderComponents = {
   kind: OrderKind;
   side: "buy" | "sell";
   hash: string;
-  price?: string;
-  paymentToken?: string;
-  amount?: number;
-  startTime?: number;
-  endTime?: number;
+  price: string;
+  paymentToken: string;
+  amount: number;
+  startTime: number;
+  endTime: number;
   contract: string;
   tokenId?: string;
-  offerer?: string;
+  offerer: string;
   taker?: string;
   isDynamic?: boolean;
   collectionSlug: string;
@@ -83,10 +82,10 @@ export const save = async (
     metadata: OrderMetadata,
     isReservoir?: boolean,
     isOpenSea?: boolean,
-    openSeaOrderParams?: OpenseaOrderParams
+    openSeaOrderParams?: PartialOrderComponents
   ) => {
     try {
-      const order = new Sdk.SeaportV14.Order(config.chainId, orderParams);
+      const order = new Sdk.Alienswap.Order(config.chainId, orderParams);
       const info = order.getInfo();
       const id = order.hash();
 
@@ -133,11 +132,10 @@ export const save = async (
       }
 
       const currentTime = now();
-      const inTheFutureThreshold = 7 * 24 * 60 * 60;
 
       // Check: order has a valid start time
       const startTime = order.params.startTime;
-      if (startTime - inTheFutureThreshold >= currentTime) {
+      if (startTime - 5 * 60 >= currentTime) {
         // TODO: Add support for not-yet-valid orders
         return results.push({
           id,
@@ -180,10 +178,6 @@ export const save = async (
         });
       }
 
-      const isProtectedOffer =
-        Sdk.SeaportV14.Addresses.OpenSeaProtectedOffersZone[config.chainId] === order.params.zone &&
-        info.side === "buy";
-
       // Check: order has a known zone
       if (order.params.orderType > 1) {
         if (
@@ -191,10 +185,7 @@ export const save = async (
             // No zone
             AddressZero,
             // Cancellation zone
-            Sdk.SeaportV14.Addresses.CancellationZone[config.chainId],
-          ].includes(order.params.zone) &&
-          // Protected offers zone
-          !isProtectedOffer
+          ].includes(order.params.zone)
         ) {
           return results.push({
             id,
@@ -237,7 +228,7 @@ export const save = async (
       // Check: order fillability
       let fillabilityStatus = "fillable";
       let approvalStatus = "approved";
-      const exchange = new Sdk.SeaportV14.Exchange(config.chainId);
+      const exchange = new Sdk.Alienswap.Exchange(config.chainId);
       try {
         await offChainCheck(order, exchange, {
           onChainApprovalRecheck: true,
@@ -400,7 +391,7 @@ export const save = async (
               ]);
 
               logger.info(
-                "orders-seaport-v1.4-save",
+                "orders-alienswap-save",
                 `TokenList. orderId=${id}, tokenSetId=${tokenSetId}, schemaHash=${schemaHash}, metadata=${JSON.stringify(
                   metadata
                 )}, ts=${JSON.stringify(ts)}`
@@ -485,6 +476,11 @@ export const save = async (
           bps,
         };
       });
+
+      // If unknown address was found
+      if (!_.isEmpty(openSeaRoyalties) && !knownFee) {
+        logger.info("orders-alienswap-save", `Unknown Fee for order ${id}`);
+      }
 
       if (feeBps > 10000) {
         return results.push({
@@ -639,45 +635,8 @@ export const save = async (
           }
         } catch (error) {
           logger.warn(
-            "orders-seaport-v1.4-save",
+            "orders-alienswap-save",
             `Bid value validation - error. orderId=${id}, contract=${info.contract}, tokenId=${tokenId}, error=${error}`
-          );
-        }
-      }
-
-      if (isOpenSea && !order.params.signature) {
-        // Mark the order as being partial in order to force filling through the order-fetcher service
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (order.params as any).partial = true;
-      }
-
-      // Handle: off-chain cancellation via replacement
-      if (order.params.zone === Sdk.SeaportV14.Addresses.CancellationZone[config.chainId]) {
-        const replacedOrderResult = await idb.oneOrNone(
-          `
-            SELECT
-              orders.raw_data
-            FROM orders
-            WHERE orders.id = $/id/
-          `,
-          {
-            id: order.params.salt,
-          }
-        );
-        if (
-          replacedOrderResult &&
-          // Replacement is only possible if the replaced order is an off-chain cancellable one
-          replacedOrderResult.raw_data.zone ===
-            Sdk.SeaportV14.Addresses.CancellationZone[config.chainId]
-        ) {
-          await axios.post(
-            `https://seaport-oracle-${
-              config.chainId === 1 ? "mainnet" : "goerli"
-            }.up.railway.app/api/replacements`,
-            {
-              newOrders: [order.params],
-              replacedOrders: [replacedOrderResult.raw_data],
-            }
           );
         }
       }
@@ -688,7 +647,7 @@ export const save = async (
         : "'infinity'";
       orderValues.push({
         id,
-        kind: "seaport-v1.4",
+        kind: order.getKind(),
         side: info.side,
         fillability_status: fillabilityStatus,
         approval_status: approvalStatus,
@@ -709,16 +668,16 @@ export const save = async (
         is_reservoir: isReservoir ? isReservoir : null,
         contract: toBuffer(info.contract),
         conduit: toBuffer(
-          new Sdk.SeaportV14.Exchange(config.chainId).deriveConduit(order.params.conduitKey)
+          new Sdk.Alienswap.Exchange(config.chainId).deriveConduit(order.params.conduitKey)
         ),
         fee_bps: feeBps,
         fee_breakdown: feeBreakdown || null,
         dynamic: info.isDynamic ?? null,
         raw_data: order.params,
         expiration: validTo,
-        missing_royalties: isProtectedOffer ? null : missingRoyalties,
-        normalized_value: isProtectedOffer ? null : normalizedValue,
-        currency_normalized_value: isProtectedOffer ? null : currencyNormalizedValue,
+        missing_royalties: missingRoyalties,
+        normalized_value: normalizedValue,
+        currency_normalized_value: currencyNormalizedValue,
         originated_at: metadata.originatedAt ?? null,
       });
 
@@ -741,7 +700,7 @@ export const save = async (
       }
     } catch (error) {
       logger.warn(
-        "orders-seaport-v1.4-save",
+        "orders-alienswap-save",
         `Failed to handle order (will retry). orderParams=${JSON.stringify(
           orderParams
         )}, metadata=${JSON.stringify(
@@ -758,7 +717,7 @@ export const save = async (
   await Promise.all(
     orderInfos.map((orderInfo) =>
       limit(async () =>
-        tracer.trace("handleOrder", { resource: "seaportV14Save" }, () =>
+        tracer.trace("handleOrder", { resource: "alienswapSave" }, () =>
           handleOrder(
             orderInfo.orderParams as Sdk.SeaportBase.Types.OrderComponents,
             orderInfo.metadata,
@@ -837,7 +796,7 @@ export const save = async (
 };
 
 const getCollection = async (
-  orderParams: OpenseaOrderParams
+  orderParams: PartialOrderComponents
 ): Promise<{
   id: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -893,7 +852,7 @@ const getCollection = async (
       );
 
       logger.info(
-        "orders-seaport-v1.4-save-partial",
+        "orders-alienswap-save",
         `Unknown Collection. orderId=${orderParams.hash}, contract=${orderParams.contract}, collectionSlug=${orderParams.collectionSlug}, lockAcquired=${lockAcquired}`
       );
 

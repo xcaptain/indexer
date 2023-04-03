@@ -1,30 +1,25 @@
+import { Exchange as SeaportV14Exchange } from "../seaport-v1.4/exchange";
 import { Contract } from "@ethersproject/contracts";
-import { HashZero } from "@ethersproject/constants";
 import * as Addresses from "./addresses";
 import ExchangeAbi from "./abis/Exchange.json";
-import { SeaportBaseExchange } from "../seaport-base/exchange";
+import { AddressZero } from "@ethersproject/constants";
 import { IOrder } from "../seaport-base/order";
 
-export class Exchange extends SeaportBaseExchange {
+export class Exchange extends SeaportV14Exchange {
+  protected exchangeAddress: string;
+  protected cancellationZoneAddress: string = AddressZero;
   public contract: Contract;
 
   constructor(chainId: number) {
     super(chainId);
-    this.contract = new Contract(Addresses.Exchange[chainId], ExchangeAbi);
-  }
-
-  // --- Derive conduit from key ---
-
-  public deriveConduit(conduitKey: string) {
-    return conduitKey === HashZero
-      ? Addresses.Exchange[this.chainId]
-      : this.conduitController.deriveConduit(conduitKey);
+    this.exchangeAddress = Addresses.Exchange[chainId];
+    this.contract = new Contract(this.exchangeAddress, ExchangeAbi);
   }
 
   // --- Get extra data ---
-
+  // not support off chain cancellation at present
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected requiresExtraData(_order_: IOrder): boolean {
+  public requiresExtraData(_order_: IOrder): boolean {
     return false;
   }
 

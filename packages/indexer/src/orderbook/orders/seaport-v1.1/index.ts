@@ -72,7 +72,7 @@ export const save = async (
   const orderValues: DbOrder[] = [];
 
   const arweaveData: {
-    order: Sdk.SeaportV11.Order;
+    order: Sdk.SeaportBase.IOrder;
     schemaHash?: string;
     source?: string;
   }[] = [];

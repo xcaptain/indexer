@@ -48,7 +48,8 @@ export const postOrderV3Options: RouteOptions = {
             "universe",
             "forward",
             "infinity",
-            "flow"
+            "flow",
+            "alienswap"
           )
           .required(),
         data: Joi.object().required(),
@@ -200,6 +201,7 @@ export const postOrderV3Options: RouteOptions = {
           }
         }
 
+        case "alienswap":
         case "seaport":
         case "seaport-v1.4": {
           if (!["opensea", "reservoir"].includes(orderbook)) {
@@ -208,10 +210,18 @@ export const postOrderV3Options: RouteOptions = {
 
           let crossPostingOrder;
 
-          const orderId =
-            order.kind === "seaport"
-              ? new Sdk.SeaportV11.Order(config.chainId, order.data).hash()
-              : new Sdk.SeaportV14.Order(config.chainId, order.data).hash();
+          let orderId = "";
+          switch (order.kind) {
+            case "seaport":
+              orderId = new Sdk.SeaportV11.Order(config.chainId, order.data).hash();
+              break;
+            case "seaport-v1.4":
+              orderId = new Sdk.SeaportV14.Order(config.chainId, order.data).hash();
+              break;
+            case "alienswap":
+              orderId = new Sdk.SeaportV11.Order(config.chainId, order.data).hash();
+              break;
+          }
 
           if (orderbook === "opensea") {
             crossPostingOrder = await crossPostingOrdersModel.saveOrder({

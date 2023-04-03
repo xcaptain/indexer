@@ -62,7 +62,8 @@ export const getExecuteBuyV7Options: RouteOptions = {
                   "infinity",
                   "sudoswap",
                   "flow",
-                  "nftx"
+                  "nftx",
+                  "alienswap"
                 )
                 .required(),
               data: Joi.object().required(),
