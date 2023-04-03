@@ -1285,7 +1285,7 @@ export const save = async (
     );
 
     if (relayToArweave) {
-      await arweaveRelay.addPendingOrdersSeaportV14(arweaveData);
+      await arweaveRelay.addPendingOrdersSeaport(arweaveData);
     }
   }
 
