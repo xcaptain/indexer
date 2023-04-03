@@ -80,7 +80,7 @@ export const save = async (
   const orderValues: DbOrder[] = [];
 
   const arweaveData: {
-    order: Sdk.SeaportV14.Order;
+    order: Sdk.SeaportBase.IOrder;
     schemaHash?: string;
     source?: string;
   }[] = [];
@@ -93,7 +93,7 @@ export const save = async (
     openSeaOrderParams?: PartialOrderComponents
   ) => {
     try {
-      const order = new Sdk.SeaportV14.Order(config.chainId, orderParams);
+      const order = new Sdk.Alienswap.Order(config.chainId, orderParams);
       const info = order.getInfo();
       const id = order.hash();
 
@@ -193,12 +193,12 @@ export const save = async (
             // No zone
             AddressZero,
             // Cancellation zone
-            Sdk.SeaportV14.Addresses.CancellationZone[config.chainId],
+            Sdk.Alienswap.Addresses.CancellationZone[config.chainId],
           ].includes(order.params.zone) &&
           !(
             // Protected offers zone
             (
-              Sdk.SeaportV14.Addresses.OpenSeaProtectedOffersZone[config.chainId] ===
+              Sdk.Alienswap.Addresses.OpenSeaProtectedOffersZone[config.chainId] ===
                 order.params.zone && info.side === "buy"
             )
           )
@@ -244,7 +244,7 @@ export const save = async (
       // Check: order fillability
       let fillabilityStatus = "fillable";
       let approvalStatus = "approved";
-      const exchange = new Sdk.SeaportV14.Exchange(config.chainId);
+      const exchange = new Sdk.Alienswap.Exchange(config.chainId);
       try {
         await offChainCheck(order, exchange, {
           onChainApprovalRecheck: true,
@@ -407,7 +407,7 @@ export const save = async (
               ]);
 
               logger.info(
-                "orders-seaport-v1.4-save",
+                "orders-alienswap-save",
                 `TokenList. orderId=${id}, tokenSetId=${tokenSetId}, schemaHash=${schemaHash}, metadata=${JSON.stringify(
                   metadata
                 )}, ts=${JSON.stringify(ts)}`
@@ -495,7 +495,7 @@ export const save = async (
 
       // If unknown address was found
       if (!_.isEmpty(openSeaRoyalties) && !knownFee) {
-        logger.info("orders-seaport-v1.4-save", `Unknown Fee for order ${id}`);
+        logger.info("orders-alienswap-save", `Unknown Fee for order ${id}`);
       }
 
       if (feeBps > 10000) {
@@ -651,7 +651,7 @@ export const save = async (
           }
         } catch (error) {
           logger.warn(
-            "orders-seaport-v1.4-save",
+            "orders-alienswap-save",
             `Bid value validation - error. orderId=${id}, contract=${info.contract}, tokenId=${tokenId}, error=${error}`
           );
         }
@@ -664,7 +664,7 @@ export const save = async (
       }
 
       // Handle: off-chain cancellation via replacement
-      if (order.params.zone === Sdk.SeaportV14.Addresses.CancellationZone[config.chainId]) {
+      if (order.params.zone === Sdk.Alienswap.Addresses.CancellationZone[config.chainId]) {
         const replacedOrderResult = await idb.oneOrNone(
           `
             SELECT
@@ -680,7 +680,7 @@ export const save = async (
           replacedOrderResult &&
           // Replacement is only possible if the replaced order is an off-chain cancellable one
           replacedOrderResult.raw_data.zone ===
-            Sdk.SeaportV14.Addresses.CancellationZone[config.chainId]
+            Sdk.Alienswap.Addresses.CancellationZone[config.chainId]
         ) {
           await axios.post(
             `https://seaport-oracle-${
@@ -700,7 +700,7 @@ export const save = async (
         : "'infinity'";
       orderValues.push({
         id,
-        kind: "seaport-v1.4",
+        kind: order.getKind(),
         side: info.side,
         fillability_status: fillabilityStatus,
         approval_status: approvalStatus,
@@ -721,7 +721,7 @@ export const save = async (
         is_reservoir: isReservoir ? isReservoir : null,
         contract: toBuffer(info.contract),
         conduit: toBuffer(
-          new Sdk.SeaportV14.Exchange(config.chainId).deriveConduit(order.params.conduitKey)
+          new Sdk.Alienswap.Exchange(config.chainId).deriveConduit(order.params.conduitKey)
         ),
         fee_bps: feeBps,
         fee_breakdown: feeBreakdown || null,
@@ -753,7 +753,7 @@ export const save = async (
       }
     } catch (error) {
       logger.warn(
-        "orders-seaport-v1.4-save",
+        "orders-alienswap-save",
         `Failed to handle order (will retry). orderParams=${JSON.stringify(
           orderParams
         )}, metadata=${JSON.stringify(
@@ -1138,13 +1138,13 @@ export const save = async (
           }
         } catch (error) {
           logger.warn(
-            "orders-seaport-v1.4-save-partial",
+            "orders-alienswap-save-partial",
             `Bid value validation - error. orderId=${id}, contract=${orderParams.contract}, tokenId=${tokenId}, error=${error}`
           );
         }
       }
 
-      const nonce = await commonHelpers.getMinNonce("seaport-v1.4", orderParams.offerer);
+      const nonce = await commonHelpers.getMinNonce("alienswap", orderParams.offerer);
 
       const validFrom = `date_trunc('seconds', to_timestamp(${startTime}))`;
       const validTo = endTime
@@ -1152,7 +1152,7 @@ export const save = async (
         : "'infinity'";
       orderValues.push({
         id,
-        kind: "seaport-v1.4",
+        kind: "alienswap",
         side: orderParams.side,
         fillability_status: fillabilityStatus,
         approval_status: approvalStatus,
@@ -1172,7 +1172,7 @@ export const save = async (
         source_id_int: source.id,
         is_reservoir: null,
         contract: toBuffer(orderParams.contract),
-        conduit: toBuffer(new Sdk.SeaportV14.Exchange(config.chainId).deriveConduit(conduitKey)),
+        conduit: toBuffer(new Sdk.Alienswap.Exchange(config.chainId).deriveConduit(conduitKey)),
         fee_bps: feeBps,
         fee_breakdown: feeBreakdown || null,
         dynamic: orderParams.isDynamic ?? null,
@@ -1199,7 +1199,7 @@ export const save = async (
       });
     } catch (error) {
       logger.warn(
-        "orders-seaport-v1.4-save",
+        "orders-alienswap-save",
         `Failed to handle partial order with params ${JSON.stringify(
           orderParams
         )}: ${error} (will retry)`
@@ -1214,7 +1214,7 @@ export const save = async (
       limit(async () =>
         orderInfo.kind == "partial"
           ? handlePartialOrder(orderInfo.orderParams as PartialOrderComponents, orderInfo.metadata)
-          : tracer.trace("handleOrder", { resource: "seaportV14Save" }, () =>
+          : tracer.trace("handleOrder", { resource: "alienswapSave" }, () =>
               handleOrder(
                 orderInfo.orderParams as Sdk.SeaportBase.Types.OrderComponents,
                 orderInfo.metadata,
@@ -1349,7 +1349,7 @@ const getCollection = async (
       );
 
       logger.info(
-        "orders-seaport-v1.4-save-partial",
+        "orders-alienswap-save-partial",
         `Unknown Collection. orderId=${orderParams.hash}, contract=${orderParams.contract}, collectionSlug=${orderParams.collectionSlug}, lockAcquired=${lockAcquired}`
       );
 
