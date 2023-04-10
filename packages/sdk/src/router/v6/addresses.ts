@@ -5,7 +5,7 @@ import { ChainIdToAddress, Network } from "../../utils";
 // V6_0_1
 export const Router: ChainIdToAddress = {
   [Network.Ethereum]: "0xc2c862322e9c97d6244a3506655da95f05246fd8",
-  [Network.EthereumGoerli]: "0xc2c862322e9c97d6244a3506655da95f05246fd8",
+  [Network.EthereumGoerli]: "0xd27aFB919b665EFf9a82C0eD33DA10934D5C6585",
   [Network.Polygon]: "0xc2c862322e9c97d6244a3506655da95f05246fd8",
   [Network.Optimism]: "0xc2c862322e9c97d6244a3506655da95f05246fd8",
   [Network.Arbitrum]: "0xc2c862322e9c97d6244a3506655da95f05246fd8",
@@ -59,7 +59,7 @@ export const SeaportV14Module: ChainIdToAddress = {
 
 export const AlienswapModule: ChainIdToAddress = {
   [Network.Ethereum]: "",
-  [Network.EthereumGoerli]: "",
+  [Network.EthereumGoerli]: "0xaBa7bc68E4E75C290D1181f053328fAC89875cAf",
 };
 
 export const SudoswapModule: ChainIdToAddress = {

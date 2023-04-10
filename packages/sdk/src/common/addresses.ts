@@ -16,7 +16,7 @@ export const Eth: ChainIdToAddress = {
 
 export const Weth: ChainIdToAddress = {
   [Network.Ethereum]: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-  [Network.EthereumGoerli]: "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
+  [Network.EthereumGoerli]: "0xd0df82de051244f04bff3a8bb1f62e1cd39eed92",
   [Network.Optimism]: "0x4200000000000000000000000000000000000006",
   [Network.Gnosis]: "0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1",
   [Network.Arbitrum]: "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
