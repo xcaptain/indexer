@@ -14,6 +14,9 @@ export class Exchange extends SeaportV14Exchange {
     this.exchangeAddress = Addresses.Exchange[chainId];
     this.cancellationZoneAddress = CancellationZone[chainId];
     this.contract = new Contract(this.exchangeAddress, ExchangeAbi);
+    this.oracleSignatureUrl = `https://seaport-oracle-${
+      this.chainId === 1 ? "mainnet" : "goerli"
+    }.up.railway.app/api/alienswap/signatures`;
   }
 
   public eip712Domain(): {

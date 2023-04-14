@@ -20,12 +20,16 @@ export class Exchange extends SeaportBaseExchange {
   protected exchangeAddress: string;
   protected cancellationZoneAddress: string;
   public contract: Contract;
+  protected oracleSignatureUrl: string;
 
   constructor(chainId: number) {
     super(chainId);
     this.exchangeAddress = Addresses.Exchange[chainId];
     this.cancellationZoneAddress = Addresses.CancellationZone[chainId];
     this.contract = new Contract(this.exchangeAddress, ExchangeAbi);
+    this.oracleSignatureUrl = `https://seaport-oracle-${
+      this.chainId === 1 ? "mainnet" : "goerli"
+    }.up.railway.app/api/signatures`;
   }
 
   public eip712Domain(): {
@@ -158,39 +162,34 @@ export class Exchange extends SeaportBaseExchange {
     switch (order.params.zone) {
       case this.cancellationZoneAddress: {
         return axios
-          .post(
-            `https://seaport-oracle-${
-              this.chainId === 1 ? "mainnet" : "goerli"
-            }.up.railway.app/api/signatures`,
-            {
-              orders: [
-                {
-                  chainId: this.chainId,
-                  orderParameters: order.params,
-                  fulfiller: AddressZero,
-                  marketplaceContract: this.contract.address,
-                  substandardRequests: [
-                    {
-                      requestedReceivedItems: order.params.consideration.map((c) => ({
-                        ...c,
-                        // All criteria items should have been resolved
-                        itemType: c.itemType > 3 ? c.itemType - 2 : c.itemType,
-                        // Adjust the amount to the quantity filled (won't work for dutch auctions)
-                        amount: bn(matchParams!.amount ?? 1)
-                          .mul(c.endAmount)
-                          .div(order.getInfo()!.amount)
-                          .toString(),
-                        identifier:
-                          c.itemType > 3
-                            ? matchParams!.criteriaResolvers![0].identifier
-                            : c.identifierOrCriteria,
-                      })),
-                    },
-                  ],
-                },
-              ],
-            }
-          )
+          .post(this.oracleSignatureUrl, {
+            orders: [
+              {
+                chainId: this.chainId,
+                orderParameters: order.params,
+                fulfiller: AddressZero,
+                marketplaceContract: this.contract.address,
+                substandardRequests: [
+                  {
+                    requestedReceivedItems: order.params.consideration.map((c) => ({
+                      ...c,
+                      // All criteria items should have been resolved
+                      itemType: c.itemType > 3 ? c.itemType - 2 : c.itemType,
+                      // Adjust the amount to the quantity filled (won't work for dutch auctions)
+                      amount: bn(matchParams!.amount ?? 1)
+                        .mul(c.endAmount)
+                        .div(order.getInfo()!.amount)
+                        .toString(),
+                      identifier:
+                        c.itemType > 3
+                          ? matchParams!.criteriaResolvers![0].identifier
+                          : c.identifierOrCriteria,
+                    })),
+                  },
+                ],
+              },
+            ],
+          })
           .then((response) => response.data.orders[0].extraDataComponent);
       }
 

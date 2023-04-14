@@ -465,7 +465,7 @@ export const save = async (orderInfos: OrderInfo[]): Promise<SaveResult[]> => {
           await axios.post(
             `https://seaport-oracle-${
               config.chainId === 1 ? "mainnet" : "goerli"
-            }.up.railway.app/api/replacements`,
+            }.up.railway.app/api/alienswap/replacements`,
             {
               newOrders: [order.params],
               replacedOrders: [replacedOrderResult.raw_data],
