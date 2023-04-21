@@ -45,6 +45,23 @@ const getNetworkConfig = (chainId?: number) => {
 };
 const networkConfig = getNetworkConfig();
 
+const optimizerSettingsNoSpecializer = {
+  enabled: true,
+  runs: 1000000000,
+  details: {
+    peephole: true,
+    inliner: true,
+    jumpdestRemover: true,
+    orderLiterals: true,
+    deduplicate: true,
+    cse: true,
+    constantOptimizer: true,
+    yulDetails: {
+      stackAllocation: true,
+    },
+  },
+};
+
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [
@@ -52,10 +69,7 @@ const config: HardhatUserConfig = {
         version: "0.8.17",
         settings: {
           viaIR: true,
-          optimizer: {
-            enabled: true,
-            runs: 200,
-          },
+          optimizer: optimizerSettingsNoSpecializer,
         },
       },
     ],
