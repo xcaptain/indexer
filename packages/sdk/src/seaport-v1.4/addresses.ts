@@ -30,4 +30,5 @@ export const OpenSeaProtectedOffersZone: ChainIdToAddress = {
 export const CancellationZone: ChainIdToAddress = {
   [Network.Ethereum]: "0xaa0e012d35cf7d6ecb6c2bf861e71248501d3226",
   [Network.EthereumGoerli]: "0x49b91d1d7b9896d28d370b75b92c2c78c1ac984a",
+  [Network.ScrollAlpha]: "0x549380bfde8943f3c8ddb8be2132d012f8193e28", // TODO: not yet deployed, but need to set
 };
