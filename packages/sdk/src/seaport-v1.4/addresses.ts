@@ -10,7 +10,7 @@ export const Exchange: ChainIdToAddress = {
   [Network.Arbitrum]: "0x00000000000001ad428e4906ae43d8f9852d0dd6",
   [Network.Avalanche]: "0x00000000000001ad428e4906ae43d8f9852d0dd6",
   [Network.AvalancheFuji]: "0x00000000000001ad428e4906ae43d8f9852d0dd6",
-  [Network.ScrollAlpha]: "0x549380bfde8943f3c8ddb8be2132d012f8193e28",
+  [Network.ScrollAlpha]: "0x238285119ad0842051b4a46a9428139d30869b55",
 };
 
 // Zones
@@ -31,5 +31,4 @@ export const OpenSeaProtectedOffersZone: ChainIdToAddress = {
 export const CancellationZone: ChainIdToAddress = {
   [Network.Ethereum]: "0xaa0e012d35cf7d6ecb6c2bf861e71248501d3226",
   [Network.EthereumGoerli]: "0x49b91d1d7b9896d28d370b75b92c2c78c1ac984a",
-  [Network.ScrollAlpha]: "0x549380bfde8943f3c8ddb8be2132d012f8193e28",
 };

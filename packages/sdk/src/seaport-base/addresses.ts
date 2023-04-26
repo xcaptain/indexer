@@ -22,6 +22,7 @@ export const ReservoirConduitKey: ChainIdToAddress = {
   [Network.Arbitrum]: "0xf3d63166f0ca56c3c1a3508fce03ff0cf3fb691e000000000000000000000000",
   [Network.Avalanche]: "0xf3d63166f0ca56c3c1a3508fce03ff0cf3fb691e000000000000000000000000",
   [Network.AvalancheFuji]: "0xf3d63166f0ca56c3c1a3508fce03ff0cf3fb691e000000000000000000000000",
+  [Network.ScrollAlpha]: "0x7e727520b29773e7f23a8665649197aaf064cef1000000000000000000000000",
 };
 
 export const OriginConduitKey: ChainIdToAddress = {
